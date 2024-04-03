@@ -1,34 +1,42 @@
 import QtQuick
 // import QtQuick.VirtualKeyboard
 
+// Import all components from folder
+import "scenes"
+
 Window {
     id: window
     width: 640
     height: 480
     visible: true
-    title: qsTr("Hello World")
+    title: qsTr("Launcher")
 
-    /* InputPanel {
+    HomeScene {
+        id: grid
+        anchors.fill: parent
+    }
+
+    /* InputPanelHomeScene {
         id: inputPanel
         z: 99
         x: 0
         y: window.height
         width: window.width
 
-        states: State {
+        states: StateHomeScene {
             name: "visible"
             when: inputPanel.active
-            PropertyChanges {
+            PropertyChangesHomeScene {
                 target: inputPanel
                 y: window.height - inputPanel.height
             }
         }
-        transitions: Transition {
+        transitions: TransitionHomeScene {
             from: ""
             to: "visible"
             reversible: true
-            ParallelAnimation {
-                NumberAnimation {
+            ParallelAnimationHomeScene {
+                NumberAnimationHomeScene {
                     properties: "y"
                     duration: 250
                     easing.type: Easing.InOutQuad
