@@ -1,18 +1,32 @@
 import QtQuick
+import QtQuick.Controls as C
 
-Rectangle {
-    id: rectangle
+C.Button {
+
+    // control.down
+    // control.activeFocus
+
+    id: control
     width: 150
     height: 50
-    radius: 5
-    color: "#ffffff"
+    text: qsTr("Button")
 
-    Text {
-        id: text1
-        text: qsTr("Text")
-        anchors.fill: parent
-        font.pixelSize: 12
+    contentItem: Text {
+        text: control.text
+        font: control.font
+        opacity: enabled ? 1.0 : 0.3
+        color: control.down ? "#000000" : (control.activeFocus ? "#ff0000" : "#555555")
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
+        elide: Text.ElideRight
+    }
+
+    background: Rectangle {
+        implicitWidth: 100
+        implicitHeight: 40
+        opacity: enabled ? 1 : 0.3
+        border.color: control.down ? "#000000" : (control.activeFocus ? "#ff0000" : "#555555")
+        border.width: 1
+        radius: 8
     }
 }
