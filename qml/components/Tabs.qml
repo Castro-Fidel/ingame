@@ -100,6 +100,8 @@ Rectangle {
                 text: "Games"
                 onClicked: function(){
                     tabs.currentTab = TabConstants.gamesTab;
+                    if(app === undefined) return;
+                    app.get_games();
                     // tabs.changeTab();
                     // console.log(tabs.currentTab);
                 }
