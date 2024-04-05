@@ -7,5 +7,6 @@ pandas
 pyqtgraph
 requests
 matplotlib
+desktop-parser
 
 
