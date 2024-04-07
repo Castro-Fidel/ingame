@@ -80,9 +80,9 @@ Rectangle {
                 model: core_app.games
 
                 Game {
-                    title: model.name
-                    exec: model.exec
-                    icon: model.icon
+                    gameTitle: model.name
+                    gameExec: model.exec
+                    gameIcon: model.icon
 
                     width: 256
                     height: 256
@@ -151,3 +151,9 @@ Rectangle {
 }
 
 
+
+/*##^##
+Designer {
+    D{i:0}D{i:1;invisible:true}
+}
+##^##*/

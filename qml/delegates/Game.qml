@@ -1,29 +1,29 @@
 import QtQuick
 import "../constants/scene.js" as SceneConstants
+import "../components/" as C
 
-Rectangle {
-    property string title: "Generic title"
-    property string icon: ""
-    property string exec: ""
+C.Button {
+    property string gameTitle: "Generic title"
+    property string gameIcon: ""
+    property string gameExec: ""
 
     id: game
     width: 256
     height: 256
-    color: "#efefef"
-    radius: 5
-    border.width: 1
+    implicitWidth: 256
+    implicitHeight: 256
+    text: ""
+    // color: "#efefef"
+    //radius: 5
+    // border.width: 1
 
-    MouseArea {
-        anchors.fill: parent
+    onClicked: function(){
+        // console.log(game.title);
+        gameInfoScene.title = game.gameTitle;
+        gameInfoScene.icon = game.gameIcon;
+        gameInfoScene.exec = game.gameExec;
 
-        onClicked: function(){
-            // console.log(game.title);
-            gameInfoScene.title = game.title;
-            gameInfoScene.icon = game.icon;
-            gameInfoScene.exec = game.exec;
-
-            window.scene = SceneConstants.gameInfoScene;
-        }
+        window.scene = SceneConstants.gameInfoScene;
     }
 
     Image {
@@ -32,7 +32,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        source: game.icon
+        source: game.gameIcon
         anchors.rightMargin: 8
         anchors.bottomMargin: 47
         anchors.leftMargin: 8
@@ -44,7 +44,7 @@ Rectangle {
         id: title
         y: 439
         height: 33
-        text: game.title
+        text: game.gameTitle
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
