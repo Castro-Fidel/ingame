@@ -84,8 +84,8 @@ Rectangle {
                     exec: model.exec
                     icon: model.icon
 
-                    // width: gamesGrid.elementWidth
-                    // height: gamesGrid.elementHeight
+                    width: 256
+                    height: 256
                     // icon: core_app.games.icon
                     // exec: core_app.games.exec
                 }
@@ -120,6 +120,8 @@ Rectangle {
             Button {
                 id: buttonSystemManagement
                 text: "System management"
+                width: 150
+                height: 50
                 onClicked: function(){
                     tabs.currentTab = TabConstants.systemManagementTab;
                     // tabs.changeTab();
@@ -130,6 +132,8 @@ Rectangle {
             Button {
                 id: buttonGames
                 text: "Games"
+                width: 150
+                height: 50
                 onClicked: function(){
                     tabs.currentTab = TabConstants.gamesTab;
                     //if(core_app === undefined) return;
@@ -146,8 +150,4 @@ Rectangle {
 
 }
 
-/*##^##
-Designer {
-    D{i:0}D{i:1;invisible:true}
-}
-##^##*/
+

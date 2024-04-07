@@ -1,4 +1,5 @@
 import QtQuick
+import "../constants/scene.js" as SceneConstants
 
 Rectangle {
     property string title: "Generic title"
@@ -11,6 +12,19 @@ Rectangle {
     color: "#efefef"
     radius: 5
     border.width: 1
+
+    MouseArea {
+        anchors.fill: parent
+
+        onClicked: function(){
+            // console.log(game.title);
+            gameInfoScene.title = game.title;
+            gameInfoScene.icon = game.icon;
+            gameInfoScene.exec = game.exec;
+
+            window.scene = SceneConstants.gameInfoScene;
+        }
+    }
 
     Image {
         id: image

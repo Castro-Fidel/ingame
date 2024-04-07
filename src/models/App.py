@@ -1,11 +1,15 @@
+import threading
+from time import sleep
+
 from PySide6 import QtCore
 from os.path import expanduser
 import glob
 from desktop_parser import DesktopFile
 import os.path
 from pathlib import Path
-from PySide6.QtCore import Property, Signal, Slot, QObject
-from src.models.GamesModel import Game, GamesModel
+from PySide6.QtCore import Property, Signal, Slot, QObject, Qt
+from models.GamesModel import Game, GamesModel
+import subprocess
 
 
 class GameShortcut:
@@ -16,12 +20,16 @@ class GameShortcut:
 
 
 class App(QtCore.QObject):
+    game_started = Signal(bool, name="gameStarted")
+    game_ended = Signal(bool, name="gameEnded")
+
     def __init__(self):
         super().__init__()
         self.games_model = GamesModel()
         self.home = expanduser('~')
         self.config_location = '/.config/PortProton.conf'
         self.portproton_location = ''
+        self.running_game_process = None
         self.setup()
 
     def setup(self):
@@ -29,8 +37,10 @@ class App(QtCore.QObject):
             with open(self.home + self.config_location, 'r') as file:
                 self.portproton_location = file.read().strip()
                 print(f'Current PortProton location: {self.portproton_location}')
+
             self.games_model.clear()
             files = glob.glob(f"{self.portproton_location}/*.desktop")
+
             for val in files:
                 desktop_file = DesktopFile.from_file(val)
                 data = desktop_file.data
@@ -65,6 +75,33 @@ class App(QtCore.QObject):
         pass
 
     ### SLOTS ###
+
+    @Slot(str)
+    def start_game(self, exec):
+        self.game_started.emit(True)
+
+        def run_in_thread(t, _exec):
+            t.running_game_process = subprocess.Popen(
+                _exec,
+                shell=True,
+                bufsize=0,
+                stdout=subprocess.PIPE,
+                universal_newlines=True
+            )
+            t.running_game_process.wait()
+            t.game_ended.emit(True)
+
+            # output = self.running_game_process.stdout.read()
+            # self.running_game_process.stdout.close()
+
+            return
+
+        thread = threading.Thread(target=run_in_thread, args=(self, exec))
+        thread.start()
+
+        pass
+
+    ### PROPERTIES ###
 
     @Property(QObject, constant=True)
     def games(self):

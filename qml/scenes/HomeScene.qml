@@ -12,7 +12,7 @@ Rectangle {
 
     Rectangle {
         id: rectangle
-        height: 50
+        height: 64
         color: "#2b2b2b"
         anchors.left: parent.left
         anchors.right: parent.right
@@ -28,7 +28,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.topMargin: 48
+        anchors.topMargin: 64
         anchors.bottomMargin: 0
         anchors.leftMargin: 0
         anchors.rightMargin: 0

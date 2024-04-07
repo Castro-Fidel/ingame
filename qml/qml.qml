@@ -3,8 +3,23 @@ import QtQuick
 
 // Import all components from folder
 import "scenes"
+import "constants/scene.js" as SceneConstants
 
 Window {
+    property string scene: SceneConstants.homeScene
+
+    Connections {
+        target: core_app
+        function onGameStarted(done) {
+            console.log("gameStarted!!");
+            window.scene = SceneConstants.runningScene;
+        }
+        function onGameEnded(done) {
+            console.log("gameEnded!!");
+            window.scene = SceneConstants.gameInfoScene;
+        }
+    }
+
     id: window
     width: 640
     height: 480
@@ -12,9 +27,24 @@ Window {
     title: qsTr("Launcher")
 
     HomeScene {
-        id: grid
+        visible: scene == SceneConstants.homeScene
+        id: homeScene
         anchors.fill: parent
     }
+
+    GameInfoScene {
+        visible: scene == SceneConstants.gameInfoScene
+        id: gameInfoScene
+        anchors.fill: parent
+    }
+
+    RunningScene {
+        visible: scene == SceneConstants.runningScene
+        id: runningScene
+        anchors.fill: parent
+    }
+
+
 
     /* InputPanelHomeScene {
         id: inputPanel

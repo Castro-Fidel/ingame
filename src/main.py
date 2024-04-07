@@ -4,8 +4,8 @@ from pathlib import Path
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
-from src.models.App import App
-from src.models.GamesModel import GamesModel
+from models.App import App
+from models.GamesModel import GamesModel
 
 # TODO: add VirtualKeyboard
 
