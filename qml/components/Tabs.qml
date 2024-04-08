@@ -7,7 +7,7 @@ import "../constants/tabs.js" as TabConstants
 
 Rectangle {
     // PROPERTIES
-    property string currentTab: TabConstants.systemManagementTab
+    property string currentTab: TabConstants.gamesTab
 
     // FIELDS
     id: tabs
@@ -53,25 +53,29 @@ Rectangle {
         anchors.topMargin: 60
         clip : true
 
+
         GridLayout {
             id: gamesGrid
-            readonly property int elementWidth: 256 + gamesGrid.rowSpacing*2
+            readonly property int elementWidth: 228 + 15// + gamesGrid.rowSpacing*2
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
 
+            //Layout.alignment: AlignCenter
+
             // columns: Math.max(Math.floor(parent.width / elementWidth), 1)
             // rows: Math.max(Math.ceil(children.length / columns), 1)
 
-            columns: Math.max(Math.floor(gamesScroller.width / elementWidth), 1)
+            //columns: Math.max(Math.min(Math.floor(gamesScroller.width / elementWidth),6), 1)
+            columns: 5
             rows: Math.max(Math.ceil(children.length / columns), 1)
 
             anchors.rightMargin: 8
             anchors.leftMargin: 8
             anchors.bottomMargin: 8
             anchors.topMargin: 8
-            rowSpacing: 8
+            rowSpacing: 15
             columnSpacing: rowSpacing
 
             Repeater {
@@ -84,8 +88,12 @@ Rectangle {
                     gameExec: model.exec
                     gameIcon: model.icon
 
-                    width: 256
-                    height: 256
+                    // Layout.fillWidth: true
+                    // Layout.preferredWidth: 1000
+
+                    //width: parent.width / 4
+                    Layout.preferredWidth: (gamesScroller.width) / gamesGrid.columns - gamesGrid.rowSpacing
+                    Layout.preferredHeight: Layout.preferredWidth / 2 * 3
                     // icon: core_app.games.icon
                     // exec: core_app.games.exec
                 }

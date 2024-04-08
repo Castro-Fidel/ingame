@@ -66,6 +66,8 @@ class App(QtCore.QObject):
                 icon = (os.path.isfile(icon) and icon
                         or os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/game_icon.png"))
 
+                # Тест карточек
+                icon = os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/PUBG.png")
                 self.games_model.add_game(Game(name=name, icon=icon, exec=exec))
 
         except FileNotFoundError:

@@ -1,6 +1,9 @@
 import QtQuick
 import "../constants/scene.js" as SceneConstants
-import "../components/" as C
+//import "../components/" as C
+
+import QtQuick.Controls as C
+
 
 C.Button {
     property string gameTitle: "Generic title"
@@ -8,11 +11,8 @@ C.Button {
     property string gameExec: ""
 
     id: game
-    width: 256
-    height: 256
-    implicitWidth: 256
-    implicitHeight: 256
     text: ""
+
     // color: "#efefef"
     //radius: 5
     // border.width: 1
@@ -33,27 +33,28 @@ C.Button {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         source: game.gameIcon
-        anchors.rightMargin: 8
-        anchors.bottomMargin: 47
-        anchors.leftMargin: 8
-        anchors.topMargin: 8
+        // anchors.rightMargin: 8
+        // anchors.bottomMargin: 47
+        // anchors.leftMargin: 8
+        // anchors.topMargin: 8
         fillMode: Image.PreserveAspectFit
     }
 
-    Text {
-        id: title
-        y: 439
-        height: 33
-        text: game.gameTitle
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        font.pixelSize: 22
-        horizontalAlignment: Text.AlignHCenter
-        anchors.rightMargin: 8
-        anchors.leftMargin: 8
-        anchors.bottomMargin: 8
-    }
+    // Text {
+    //     id: title
+    //     y: 439
+    //     height: 33
+    //     color: "#e23f3f"
+    //     text: game.gameTitle
+    //     anchors.left: parent.left
+    //     anchors.right: parent.right
+    //     anchors.bottom: parent.bottom
+    //     font.pixelSize: 22
+    //     horizontalAlignment: Text.AlignHCenter
+    //     anchors.rightMargin: 8
+    //     anchors.leftMargin: 8
+    //     anchors.bottomMargin: 8
+    // }
 
     
 }
