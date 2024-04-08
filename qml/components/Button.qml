@@ -2,13 +2,10 @@ import QtQuick
 import QtQuick.Controls as C
 
 C.Button {
-
     // control.down
     // control.activeFocus
 
     id: control
-    width: 150
-    height: 50
     text: qsTr("Button")
 
     contentItem: Text {
