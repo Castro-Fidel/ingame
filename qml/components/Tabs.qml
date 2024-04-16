@@ -1,8 +1,11 @@
 import QtQuick
-import QtQuick.Controls as C
+import QtQuick.Controls
 import QtQuick.Layouts
 import "../delegates"
 import "../constants/tabs.js" as TabConstants
+import "../constants/style.js" as Style
+import "../components" as TopMenuBut
+
 
 
 Rectangle {
@@ -15,12 +18,57 @@ Rectangle {
     y: 0
     width: 640
     height: 480
-    color: "#ffffff"
+    color: Style.backgroundColor
 
     // onWidthChanged: { console.log("Window Width changed: " + width) }
     // onHeightChanged: { console.log("Window Height changed: " + height)}
 
     // COMPONENTS
+    RowLayout {
+        id: row
+        spacing: 5
+        //width: parent.width
+        anchors.leftMargin: parent.width / 10
+        anchors.rightMargin: parent.width / 10
+        anchors.bottomMargin: buttonSystemManagement.height / 6
+        anchors.topMargin: buttonSystemManagement.height / 6
+        Layout.alignment: Qt.AlignHCenter
+
+        height: buttonSystemManagement.height + anchors.bottomMargin + anchors.topMargin
+
+
+        //padding: 0
+
+
+
+        TopMenuBut.Button {
+
+            id: buttonSystemManagement
+            text: TabConstants.systemManagementTab
+            //Layout.preferredHeight: 30
+            onClicked: function(){
+                tabs.currentTab = TabConstants.systemManagementTab;
+                // tabs.changeTab();
+                // console.log(tabs.currentTab);
+            }
+        }
+
+        TopMenuBut.Button {
+            //anchors.horizontalCenter: parent.horizontalCenter
+            id: buttonGames
+            text: TabConstants.gamesTab
+            //Layout.preferredHeight: 30
+            onClicked: function(){
+                tabs.currentTab = TabConstants.gamesTab;
+                //if(core_app === undefined) return;
+                //console.log("core_app found");
+
+                //app.get_games();
+                // tabs.changeTab();
+                // console.log(tabs.currentTab);
+            }
+        }
+    }
 
     Grid {
         id: systemManagementGrid
@@ -33,10 +81,10 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.topMargin: 60
+        Layout.topMargin: 190
         anchors.rightMargin: 0
         anchors.leftMargin: 0
-        anchors.bottomMargin: 0
+        anchors.bottomMargin: 90
 
         Rectangle { color: "red"; width: 50; height: 50 }
         Rectangle { color: "green"; width: 20; height: 50 }
@@ -46,114 +94,64 @@ Rectangle {
     }
 
 
-    C.ScrollView {
+    ScrollView {
         visible: tabs.currentTab == TabConstants.gamesTab
         id: gamesScroller
         anchors.fill: parent
-        anchors.topMargin: 60
-        clip : true
+        anchors.topMargin: row.height
+        ScrollBar.vertical: ScrollBar {
+            id: scrolV;
+            height: parent.height
+            opacity:0
+
+            property double fromAnim: 0.0
+            property double toAnim: 0.0
+        }
+
+        function scrollToY(y,HItem) {
+            scrolV.fromAnim = scrolV.position
+            scrolV.position = (1.0 - scrolV.size) * y/gamesScroller.height
+            scrolV.toAnim = (1.0 - scrolV.size) * y/gamesScroller.height
+            if(scrolV.toAnim != scrolV.fromAnim)scrollAnimation.start()
+        }
+        PropertyAnimation {to:scrolV.toAnim;from:scrolV.fromAnim;target:scrolV;id:scrollAnimation; property: "position" ;duration: 200 }
 
 
         GridLayout {
             id: gamesGrid
-            readonly property int elementWidth: 228 + 15// + gamesGrid.rowSpacing*2
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-
-            //Layout.alignment: AlignCenter
-
-            // columns: Math.max(Math.floor(parent.width / elementWidth), 1)
-            // rows: Math.max(Math.ceil(children.length / columns), 1)
-
-            //columns: Math.max(Math.min(Math.floor(gamesScroller.width / elementWidth),6), 1)
-            columns: 5
+            columns: 6
             rows: Math.max(Math.ceil(children.length / columns), 1)
 
-            anchors.rightMargin: 8
-            anchors.leftMargin: 8
-            anchors.bottomMargin: 8
-            anchors.topMargin: 8
-            rowSpacing: 15
+            anchors.rightMargin: rowSpacing
+            anchors.leftMargin: rowSpacing
+            anchors.bottomMargin : 90
+            anchors.topMargin: Math.floor( gamesScroller.width / 100 * 1.5)
+            rowSpacing:Math.floor( gamesScroller.width / 100 * 1.5)
             columnSpacing: rowSpacing
 
             Repeater {
-                // Layout.fillHeight: true
-                // Layout.fillWidth: true
                 model: core_app.games
-
                 Game {
+
                     gameTitle: model.name
                     gameExec: model.exec
                     gameIcon: model.icon
-
-                    // Layout.fillWidth: true
-                    // Layout.preferredWidth: 1000
-
-                    //width: parent.width / 4
-                    Layout.preferredWidth: (gamesScroller.width) / gamesGrid.columns - gamesGrid.rowSpacing
+                    Layout.bottomMargin : (index - index % gamesGrid.columns)/ gamesGrid.columns === gamesGrid.rows-1 ? gamesGrid.rowSpacing*2 : 0
+                    onFocusChanged: if(focus) { gamesScroller.scrollToY(y); }
+                    Layout.preferredWidth: (gamesScroller.width - (gamesGrid.columns +1)* gamesGrid.rowSpacing) / gamesGrid.columns
                     Layout.preferredHeight: Layout.preferredWidth / 2 * 3
-                    // icon: core_app.games.icon
-                    // exec: core_app.games.exec
                 }
             }
         }
     }
 
-    Rectangle {
-        id: tabsBar
-        height: 60
-        color: "#4a4a4a"
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: 0
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
 
-        Row {
-            id: row
-            height: 60
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            spacing: 5
-            padding: 0
-            rightPadding: 5
-            leftPadding: 5
-            bottomPadding: 5
-            topPadding: 5
 
-            Button {
-                id: buttonSystemManagement
-                text: "System management"
-                width: 150
-                height: 50
-                onClicked: function(){
-                    tabs.currentTab = TabConstants.systemManagementTab;
-                    // tabs.changeTab();
-                    // console.log(tabs.currentTab);
-                }
-            }
 
-            Button {
-                id: buttonGames
-                text: "Games"
-                width: 150
-                height: 50
-                onClicked: function(){
-                    tabs.currentTab = TabConstants.gamesTab;
-                    //if(core_app === undefined) return;
-                    //console.log("core_app found");
-
-                    //app.get_games();
-                    // tabs.changeTab();
-                    // console.log(tabs.currentTab);
-                }
-            }
-        }
-    }
 
 
 }

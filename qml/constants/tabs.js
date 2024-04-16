@@ -1,2 +1,2 @@
-var systemManagementTab = "systemManagement";
-var gamesTab = "games";
+var systemManagementTab = "System";
+var gamesTab = "Games";
