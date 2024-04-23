@@ -46,13 +46,13 @@ class App(QtCore.QObject):
                 data = desktop_file.data
                 entry = data['Desktop Entry']
 
-                name = entry['Name'] or 'generic'
-                exec = 'Exec' in entry and entry['Exec'] or ''
-                icon = entry['Icon']
+                _name = entry['Name'] or 'generic'
+                _exec = 'Exec' in entry and entry['Exec'] or ''
+                _icon = entry['Icon']
 
-                assert (isinstance(name, str)
+                assert (isinstance(_name, str)
                         and isinstance(exec, str)
-                        and isinstance(icon, str))
+                        and isinstance(_icon, str))
 
                 exec_split = exec.split(' ')
 
@@ -63,10 +63,15 @@ class App(QtCore.QObject):
 
                 # TODO parse product name
 
-                icon = (os.path.isfile(icon) and icon
+                _icon = (os.path.isfile(_icon) and _icon
                         or os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/game_icon.png"))
 
-                self.games_model.add_game(Game(name=name, icon=icon, exec=exec))
+                # Автозапуск игры:
+                # PW_GUI_DISABLED_CS=1
+                # START_FROM_STEAM=1
+                _exec = f"env START_FROM_STEAM=1 {_exec}"
+
+                self.games_model.add_game(Game(name=_name, icon=_icon, exec=_exec))
 
         except FileNotFoundError:
             print('File not found')
