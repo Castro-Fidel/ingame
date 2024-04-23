@@ -4,9 +4,13 @@ import os.path
 import subprocess
 from time import sleep
 from pathlib import Path
+from typing import AnyStr, Union
+
 from PySide6 import QtCore
 from os.path import expanduser
 from desktop_parser import DesktopFile
+
+from ingame.models.Gamepad import Gamepad
 from ingame.models.GamesModel import Game, GamesModel
 from PySide6.QtCore import Property, Signal, Slot, QObject, Qt
 
@@ -22,13 +26,21 @@ class App(QtCore.QObject):
     game_started = Signal(bool, name="gameStarted")
     game_ended = Signal(bool, name="gameEnded")
 
+    gamepad_clicked_LB = Signal(bool, name="gamepadClickedLB")
+    gamepad_clicked_RB = Signal(bool, name="gamepadClickedRB")
+
     def __init__(self):
         super().__init__()
-        self.games_model = GamesModel()
-        self.home = expanduser('~')
-        self.config_location = '/.config/PortProton.conf'
-        self.portproton_location = ''
-        self.running_game_process = None
+        self.games_model: GamesModel = GamesModel()
+        self.home: AnyStr = expanduser('~')
+        self.config_location: str = '/.config/PortProton.conf'
+        self.portproton_location: str = ''
+        self.running_game_process: Union[subprocess.Popen, None] = None
+
+        self.gamepad: Gamepad = Gamepad()
+        self.gamepad.lb_clicked = lambda: self.gamepad_clicked_LB.emit(True)
+        self.gamepad.rb_clicked = lambda: self.gamepad_clicked_RB.emit(True)
+
         self.setup()
 
     def setup(self):
@@ -72,11 +84,23 @@ class App(QtCore.QObject):
 
                 self.games_model.add_game(Game(name=_name, icon=_icon, exec=_exec))
 
+            self.gamepad.run()
+
         except FileNotFoundError:
             print('File not found')
         except Exception as e:
             print('An error occurred', e)
         pass
+
+    ### CALLBACKS ###
+
+    def close_event(self):
+        # do stuff
+        # if can_exit:
+        self.gamepad.terminate()
+        # event.accept()  # let the window close
+        # else:
+        #    event.ignore()
 
     ### SLOTS ###
 

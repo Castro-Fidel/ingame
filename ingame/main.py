@@ -10,10 +10,13 @@ from ingame.models.GamesModel import GamesModel
 
 def main():
     app = QGuiApplication(sys.argv)
+    app_model = App()
+
+    app.aboutToQuit.connect(app_model.close_event)
+
     qml_file = Path(__file__).resolve().parent / "../qml/qml.qml"
     engine = QQmlApplicationEngine()
 
-    app_model = App()
     context = engine.rootContext()
     context.setContextProperty("core_app", app_model)
 
