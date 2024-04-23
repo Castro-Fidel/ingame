@@ -1,15 +1,14 @@
 import sys
 from pathlib import Path
-
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+from ingame.models.App import App
+from ingame.models.GamesModel import GamesModel
 
-from models.App import App
-from models.GamesModel import GamesModel
 
 # TODO: add VirtualKeyboard
 
-if __name__ == "__main__":
+def main():
     app = QGuiApplication(sys.argv)
     qml_file = Path(__file__).resolve().parent / "../qml/qml.qml"
     engine = QQmlApplicationEngine()
@@ -23,3 +22,7 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()

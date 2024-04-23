@@ -1,15 +1,14 @@
 import threading
+import glob
+import os.path
+import subprocess
 from time import sleep
-
+from pathlib import Path
 from PySide6 import QtCore
 from os.path import expanduser
-import glob
 from desktop_parser import DesktopFile
-import os.path
-from pathlib import Path
+from ingame.models.GamesModel import Game, GamesModel
 from PySide6.QtCore import Property, Signal, Slot, QObject, Qt
-from models.GamesModel import Game, GamesModel
-import subprocess
 
 
 class GameShortcut:
@@ -51,10 +50,10 @@ class App(QtCore.QObject):
                 _icon = entry['Icon']
 
                 assert (isinstance(_name, str)
-                        and isinstance(exec, str)
+                        and isinstance(_exec, str)
                         and isinstance(_icon, str))
 
-                exec_split = exec.split(' ')
+                exec_split = _exec.split(' ')
 
                 # Ignore extra non-related desktop entries
                 if (len(exec_split) <= 1 or
