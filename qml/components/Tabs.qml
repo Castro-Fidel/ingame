@@ -147,6 +147,41 @@ Rectangle {
         }
     }
 
+    // LOGIC
+    property int focused: 0;
+
+    function applyFocus(inc){
+        if(!visible)
+            return;
+
+        let c = row.children;
+
+        tabs.focused += inc;
+        if(tabs.focused >= c.length)
+            tabs.focused = 0;
+
+        if(tabs.focused < 0)
+            tabs.focused = c.length - 1;
+
+        c[tabs.focused].forceActiveFocus();
+        c[tabs.focused].clicked();
+
+        /* if (c[i].focus) {
+            console.log("focus found");
+            c[i].nextItemInFocusChain().forceActiveFocus()
+            break
+        } */
+    }
+
+    Connections {
+        target: core_app
+        function onGamepadClickedLB(done){
+            tabs.applyFocus(1)
+        }
+        function onGamepadClickedRB(done){
+            tabs.applyFocus(-1)
+        }
+    }
 
 }
 

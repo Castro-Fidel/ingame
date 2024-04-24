@@ -19,10 +19,10 @@ Window {
             window.scene = SceneConstants.gameInfoScene;
         }
         function onGamepadClickedLB(done){
-            console.log("core_app: onGamepadClickedLB");
+            // console.log("core_app: onGamepadClickedLB");
         }
         function onGamepadClickedRB(done){
-            console.log("core_app: onGamepadClickedRB");
+            // console.log("core_app: onGamepadClickedRB");
         }
     }
 
