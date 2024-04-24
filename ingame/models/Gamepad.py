@@ -34,45 +34,48 @@ class Gamepad:
             self.thread.start()
 
     def cycle(self):
-        while not self.terminated:
-            # pygame.event.pump()
-            pygame.event.wait()
+        try:
+            while not self.terminated:
+                # pygame.event.pump()
+                pygame.event.wait()
 
-            lb_button = self.joystick.get_button(self.LB_BUTTON)
-            rb_button = self.joystick.get_button(self.RB_BUTTON)
+                lb_button = self.joystick.get_button(self.LB_BUTTON)
+                rb_button = self.joystick.get_button(self.RB_BUTTON)
 
-            # LB
+                # LB
 
-            if lb_button and not self.last_lb_clicked:
-                self.last_lb_clicked = not self.last_lb_clicked
-                self.lb_clicked()
+                if lb_button and not self.last_lb_clicked:
+                    self.last_lb_clicked = not self.last_lb_clicked
+                    self.lb_clicked()
 
-            if not lb_button and self.last_lb_clicked:
-                self.last_lb_clicked = not self.last_lb_clicked
+                if not lb_button and self.last_lb_clicked:
+                    self.last_lb_clicked = not self.last_lb_clicked
 
-            # RB
+                # RB
 
-            if rb_button and not self.last_rb_clicked:
-                self.last_rb_clicked = not self.last_rb_clicked
-                self.rb_clicked()
+                if rb_button and not self.last_rb_clicked:
+                    self.last_rb_clicked = not self.last_rb_clicked
+                    self.rb_clicked()
 
-            if not rb_button and self.last_rb_clicked:
-                self.last_rb_clicked = not self.last_rb_clicked
+                if not rb_button and self.last_rb_clicked:
+                    self.last_rb_clicked = not self.last_rb_clicked
 
-            # print(f"Button {self.LB_BUTTON}: {lb_button}")
-            # print(f"Button {self.RB_BUTTON}: {rb_button}")
+                # print(f"Button {self.LB_BUTTON}: {lb_button}")
+                # print(f"Button {self.RB_BUTTON}: {rb_button}")
 
-            # for i in range(self.joystick.get_numaxes()):
-            #     axis = self.joystick.get_axis(i)
-            #     print(f"Axis {i}: {axis}")
-            #
-            # for i in range(self.joystick.get_numbuttons()):
-            #     button = self.joystick.get_button(i)
-            #     print(f"Button {i}: {button}")
+                # for i in range(self.joystick.get_numaxes()):
+                #     axis = self.joystick.get_axis(i)
+                #     print(f"Axis {i}: {axis}")
+                #
+                # for i in range(self.joystick.get_numbuttons()):
+                #     button = self.joystick.get_button(i)
+                #     print(f"Button {i}: {button}")
+        except pygame.error:
+            pass
 
     def terminate(self):
-        # TODO
-        # self.thread.
+        self.terminated = True
+        pygame.quit()
         pass
 
     pass

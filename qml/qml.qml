@@ -26,6 +26,10 @@ Window {
         }
     }
 
+    Component.onDestruction: {
+        console.log("Desctructing window");
+    }
+
     id: window
     width: 640
     height: 480
