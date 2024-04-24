@@ -24,6 +24,15 @@ Window {
         function onGamepadClickedRB(done){
             // console.log("core_app: onGamepadClickedRB");
         }
+        function onGamepadAxisLeft(done){
+            // console.log("core_app: onGamepadAxisLeft");
+        }
+        function onGamepadAxisRight(done){
+            // console.log("core_app: onGamepadAxisRight");
+        }
+        function onGamepadClickedApply(done){
+            // console.log("core_app: onGamepadClickedApply");
+        }
     }
 
     Component.onDestruction: {

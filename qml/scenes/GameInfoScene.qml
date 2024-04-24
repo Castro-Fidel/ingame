@@ -79,4 +79,38 @@ Rectangle {
         }
     }
 
+    // LOGIC
+
+    property int focusedItems: 0;
+    function applyItemsFocus(inc){
+        let c = children;
+
+        focusedItems += inc;
+        if(focusedItems >= c.length)
+            focusedItems = 0;
+
+        if(focusedItems < 0)
+            focusedItems = c.length - 1;
+
+        c[focusedItems].forceActiveFocus();
+        // c[focusedItems].clicked();
+    }
+
+    Connections {
+        target: core_app
+        function onGamepadAxisLeft(done){
+            if(!visible) return;
+            container.applyItemsFocus(-1)
+        }
+        function onGamepadAxisRight(done){
+            if(!visible) return;
+            container.applyItemsFocus(1)
+        }
+        function onGamepadClickedApply(done){
+            if(!visible) return;
+            let c = container.children;
+            c[container.focusedItems].clicked();
+        }
+    }
+
 }
