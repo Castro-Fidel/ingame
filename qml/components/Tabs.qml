@@ -223,6 +223,75 @@ Rectangle {
 
 
 
+    // LOGIC
+    property int focusedTabs: 0;
+    property int focusedItems: 0;
+
+    function applyTabsFocus(inc){
+        if(!visible)
+            return;
+
+        let c = row.children;
+
+        tabs.focusedTabs += inc;
+        if(tabs.focusedTabs >= c.length)
+            tabs.focusedTabs = 0;
+
+        if(tabs.focusedTabs < 0)
+            tabs.focusedTabs = c.length - 1;
+
+        c[tabs.focusedTabs].forceActiveFocus();
+        c[tabs.focusedTabs].clicked();
+
+        /* if (c[i].focus) {
+            console.log("focus found");
+            c[i].nextItemInFocusChain().forceActiveFocus()
+            break
+        } */
+    }
+
+    function applyItemsFocus(inc){
+        if(!gamesScroller.visible)
+            return;
+
+        let c = gamesGrid.children;
+
+        tabs.focusedItems += inc;
+        if(tabs.focusedItems >= c.length)
+            tabs.focusedItems = 0;
+
+        if(tabs.focusedItems < 0)
+            tabs.focusedItems = c.length - 1;
+
+        c[tabs.focusedItems].forceActiveFocus();
+        // gamesScroller.contentY = c[tabs.focusedItems].y; // not working
+        // c[tabs.focusedItems].clicked();
+    }
+
+    Connections {
+        target: core_app
+        function onGamepadClickedLB(done){
+            if(!visible) return;
+            tabs.applyTabsFocus(-1)
+        }
+        function onGamepadClickedRB(done){
+            if(!visible) return;
+            tabs.applyTabsFocus(1)
+        }
+        function onGamepadAxisLeft(done){
+            if(!visible) return;
+            tabs.applyItemsFocus(-1)
+        }
+        function onGamepadAxisRight(done){
+            if(!visible) return;
+            tabs.applyItemsFocus(1)
+        }
+        function onGamepadClickedApply(done){
+            if(!visible) return;
+            let c = gamesGrid.children;
+            c[tabs.focusedItems].clicked();
+        }
+    }
 
 }
 

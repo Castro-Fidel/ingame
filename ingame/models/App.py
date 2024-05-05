@@ -1,15 +1,18 @@
 import threading
+import glob
+import os.path
+import subprocess
 from time import sleep
+from pathlib import Path
+from typing import AnyStr, Union
 
 from PySide6 import QtCore
 from os.path import expanduser
-import glob
 from desktop_parser import DesktopFile
-import os.path
-from pathlib import Path
+
+from ingame.models.Gamepad import Gamepad
+from ingame.models.GamesModel import Game, GamesModel
 from PySide6.QtCore import Property, Signal, Slot, QObject, Qt
-from models.GamesModel import Game, GamesModel
-import subprocess
 
 
 class GameShortcut:
@@ -23,13 +26,27 @@ class App(QtCore.QObject):
     game_started = Signal(bool, name="gameStarted")
     game_ended = Signal(bool, name="gameEnded")
 
+    gamepad_clicked_LB = Signal(bool, name="gamepadClickedLB")
+    gamepad_clicked_RB = Signal(bool, name="gamepadClickedRB")
+    gamepad_clicked_apply = Signal(bool, name="gamepadClickedApply")
+    gamepad_axis_left = Signal(bool, name="gamepadAxisLeft")
+    gamepad_axis_right = Signal(bool, name="gamepadAxisRight")
+
     def __init__(self):
         super().__init__()
-        self.games_model = GamesModel()
-        self.home = expanduser('~')
-        self.config_location = '/.config/PortProton.conf'
-        self.portproton_location = ''
-        self.running_game_process = None
+        self.games_model: GamesModel = GamesModel()
+        self.home: AnyStr = expanduser('~')
+        self.config_location: str = '/.config/PortProton.conf'
+        self.portproton_location: str = ''
+        self.running_game_process: Union[subprocess.Popen, None] = None
+
+        self.gamepad: Gamepad = Gamepad()
+        self.gamepad.lb_clicked = lambda: self.gamepad_clicked_LB.emit(True)
+        self.gamepad.rb_clicked = lambda: self.gamepad_clicked_RB.emit(True)
+        self.gamepad.apply_clicked = lambda: self.gamepad_clicked_apply.emit(True)
+        self.gamepad.l_clicked = lambda: self.gamepad_axis_left.emit(True)
+        self.gamepad.r_clicked = lambda: self.gamepad_axis_right.emit(True)
+
         self.setup()
 
     def setup(self):
@@ -46,15 +63,15 @@ class App(QtCore.QObject):
                 data = desktop_file.data
                 entry = data['Desktop Entry']
 
-                name = entry['Name'] or 'generic'
-                exec = 'Exec' in entry and entry['Exec'] or ''
-                icon = entry['Icon']
+                _name = entry['Name'] or 'generic'
+                _exec = 'Exec' in entry and entry['Exec'] or ''
+                _icon = entry['Icon']
 
-                assert (isinstance(name, str)
-                        and isinstance(exec, str)
-                        and isinstance(icon, str))
+                assert (isinstance(_name, str)
+                        and isinstance(_exec, str)
+                        and isinstance(_icon, str))
 
-                exec_split = exec.split(' ')
+                exec_split = _exec.split(' ')
 
                 # Ignore extra non-related desktop entries
                 if (len(exec_split) <= 1 or
@@ -63,18 +80,33 @@ class App(QtCore.QObject):
 
                 # TODO parse product name
 
-                icon = (os.path.isfile(icon) and icon
-                        or os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/game_icon.png"))
+                _icon = (os.path.isfile(_icon) and _icon
+                        or os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/PUBG.png"))
 
-                # Тест карточек
-                icon = os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/PUBG.png")
-                self.games_model.add_game(Game(name=name, icon=icon, exec=exec))
+                # Автозапуск игры:
+                # PW_GUI_DISABLED_CS=1
+                # START_FROM_STEAM=1
+                _exec = f"env START_FROM_STEAM=1 {_exec}"
+
+                self.games_model.add_game(Game(name=_name, icon=_icon, exec=_exec))
+
+            self.gamepad.run()
 
         except FileNotFoundError:
             print('File not found')
         except Exception as e:
             print('An error occurred', e)
         pass
+
+    ### CALLBACKS ###
+
+    def close_event(self):
+        # do stuff
+        # if can_exit:
+        self.gamepad.terminate()
+        # event.accept()  # let the window close
+        # else:
+        #    event.ignore()
 
     ### SLOTS ###
 

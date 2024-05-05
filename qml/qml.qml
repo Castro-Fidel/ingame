@@ -11,13 +11,32 @@ Window {
     Connections {
         target: core_app
         function onGameStarted(done) {
-            console.log("gameStarted!!");
+            console.log("core_app: gameStarted");
             window.scene = SceneConstants.runningScene;
         }
         function onGameEnded(done) {
-            console.log("gameEnded!!");
+            console.log("core_app: gameEnded");
             window.scene = SceneConstants.gameInfoScene;
         }
+        function onGamepadClickedLB(done){
+            // console.log("core_app: onGamepadClickedLB");
+        }
+        function onGamepadClickedRB(done){
+            // console.log("core_app: onGamepadClickedRB");
+        }
+        function onGamepadAxisLeft(done){
+            // console.log("core_app: onGamepadAxisLeft");
+        }
+        function onGamepadAxisRight(done){
+            // console.log("core_app: onGamepadAxisRight");
+        }
+        function onGamepadClickedApply(done){
+            // console.log("core_app: onGamepadClickedApply");
+        }
+    }
+
+    Component.onDestruction: {
+        console.log("Desctructing window");
     }
 
     id: window
