@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls as C
 import "."
 
-Button {
+C.Button {
     property string imageUrl: "../images/generic.svg"
     id: button
 
