@@ -13,13 +13,16 @@ Rectangle {
     property var activeButtonTab: buttonGames
 
 
+
     id: tabs
-    x: 0
+    x: 100
     y: 0
     width: 640
     height: 480
     color: Style.backgroundColor
-    Component.onCompleted:{tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;}
+    onVisibleChanged: {tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;console.log("tabButtons.x = " + tabButtons.x);}
+
+    Component.onCompleted:{tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;console.log("Tabs completed!");}
     onWidthChanged: function(){tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;}
     onHeightChanged: function(){tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;}
 
@@ -35,15 +38,17 @@ Rectangle {
         width: parent.width
         RowLayout {
             id: tabButtons
-            property int tempX: 0
+            property int tempX: 100
             property bool toggle: false
-            height: 400
+
+
             //anchors.leftMargin: parent.width / 10
             //anchors.rightMargin: parent.width / 10
-            Layout.bottomMargin: buttonSystemManagement.height
-            Layout.topMargin: buttonSystemManagement.height
+            Component.onCompleted:{tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;console.log("tabButtons completed!");}
 
-            //x: topNavigation.width / 2 //- tabButtons.children[1].width / 2 - (spacing + tabButtons.children[0].width )
+            Layout.bottomMargin: buttonSystemManagement.height / 2
+            Layout.topMargin: buttonSystemManagement.height / 3
+            x:100
             // Состояния
             states: [
                 State {name: "ClickTabButton";when:tabButtons.toggle;PropertyChanges {target: tabButtons;x:tempX}},
@@ -74,7 +79,10 @@ Rectangle {
                 for(i = 0; i < index; ++i)
                     left_distance += spacing + children[i].width
                 tempX = topNavigation.width / 2 - tabButtons.children[index].width / 2 - left_distance
+                tabs.activeButtonTab.isActive = false
                 tabs.activeButtonTab = ButtonId
+                tabs.activeButtonTab.isActive = true
+
             }
 
             TopMenuBut.TextButton {
@@ -104,14 +112,16 @@ Rectangle {
 
                     //app.get_games();
                     // tabs.changeTab();
-                    // console.log(tabs.currentTab);
+                    // ;console.log(tabs.currentTab);
+
+                    // ;console.log("1");
                 }
                 onReleased: tabButtons.toggle = false
 
             }
             TopMenuBut.TextButton {
                 id: testbut1
-                text: "Test"
+                text: "Mega"
                 onClicked: function(){
                     tabButtons.x = tabButtons.tempX
                     tabButtons.changeButtonActiveTab(this)
@@ -122,7 +132,7 @@ Rectangle {
             }
             TopMenuBut.TextButton {
                 id: testbut2
-                text: "Test2"
+                text: "Test"
                 //font.pixelSize: 60
                 //height:Math.ceil(tabs.height/100 * 10)
 

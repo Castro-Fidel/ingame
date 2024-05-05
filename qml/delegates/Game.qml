@@ -18,11 +18,15 @@ C.Button {
         anchors.fill: parent
         hoverEnabled: true
         onClicked: function(){
-            // console.log(game.title);
+            // console.log(game.title)
             gameInfoScene.title = game.gameTitle;
             gameInfoScene.icon = game.gameIcon;
             gameInfoScene.exec = game.gameExec;
-            window.scene = SceneConstants.gameInfoScene;
+
+
+
+
+           window.scene = SceneConstants.gameInfoScene;
         }
     }
     //
