@@ -1,9 +1,0 @@
-PySide6==6.6.3
-PySide6-Essentials==6.6.3
-PySide6-Addons==6.6.3
-shiboken6==6.6.3
-pyqtgraph
-requests
-desktop-parser
-mypy
-

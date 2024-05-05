@@ -7,12 +7,13 @@ Use the following commands in UNIX shell:
 
 ```shell
 # Prepare and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate
+python -m pip install --user pipx
+python -m pipx ensurepath
+pipx install poetry
 
 # Install requirements
-pip install -r requirements.txt
+poetry install
 
 # Run
-python src/main.py
+poetry run main
 ```

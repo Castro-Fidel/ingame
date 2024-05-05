@@ -12,8 +12,8 @@ Rectangle {
 
     Rectangle {
         id: rectangle
-        height: 64
-        color: "#2b2b2b"
+        height: parent.height/100 * 5
+        color: "black"
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
@@ -28,7 +28,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.topMargin: 64
+        anchors.topMargin: rectangle.height
         anchors.bottomMargin: 0
         anchors.leftMargin: 0
         anchors.rightMargin: 0

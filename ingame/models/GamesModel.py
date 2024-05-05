@@ -1,6 +1,5 @@
 import typing
 from dataclasses import dataclass, fields
-
 from PySide6.QtCore import QAbstractListModel, QModelIndex, Qt, QByteArray
 
 
