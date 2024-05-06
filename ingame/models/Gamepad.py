@@ -12,20 +12,26 @@ class Gamepad:
     LEFT_RIGHT_AXIS = 0
     LEFT_RIGHT_AXIS_SENSITIVITY = 0.7
     APPLY_BUTTON = 0
+    BACK_BUTTON = 1
 
     def __init__(self):
         self.joystick: Union[Joystick, None] = None
+
         self.terminated: bool = False
         self.last_rb_clicked: bool = False
         self.last_lb_clicked: bool = False
         self.last_apply_clicked: bool = False
         self.last_left_clicked: bool = False
         self.last_right_clicked: bool = False
+        self.last_back_clicked: bool = False
+
         self.lb_clicked: () = lambda: None
         self.rb_clicked: () = lambda: None
         self.l_clicked: () = lambda: None
         self.r_clicked: () = lambda: None
+        self.back_clicked: () = lambda: None
         self.apply_clicked: () = lambda: None
+
         self.thread: Union[threading.Thread, None] = None
 
         pygame.init()
@@ -58,6 +64,7 @@ class Gamepad:
                 rb_button = self.joystick.get_button(self.RB_BUTTON)
                 apply_button = self.joystick.get_button(self.APPLY_BUTTON)
                 left_right_axis = self.joystick.get_axis(self.LEFT_RIGHT_AXIS)
+                back_button = self.joystick.get_button(self.BACK_BUTTON)
 
                 # LB
 
@@ -102,6 +109,14 @@ class Gamepad:
 
                 if (not left_right_axis >= self.LEFT_RIGHT_AXIS_SENSITIVITY) and self.last_right_clicked:
                     self.last_right_clicked = not self.last_right_clicked
+
+                # BACK
+                if back_button and not self.last_back_clicked:
+                    self.last_back_clicked = not self.last_back_clicked
+                    self.back_clicked()
+
+                if not back_button and self.last_back_clicked:
+                    self.last_back_clicked = not self.last_back_clicked
 
                 # print(f"Button {self.LB_BUTTON}: {lb_button}")
                 # print(f"Button {self.RB_BUTTON}: {rb_button}")

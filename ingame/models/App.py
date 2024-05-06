@@ -29,6 +29,7 @@ class App(QtCore.QObject):
     gamepad_clicked_LB = Signal(bool, name="gamepadClickedLB")
     gamepad_clicked_RB = Signal(bool, name="gamepadClickedRB")
     gamepad_clicked_apply = Signal(bool, name="gamepadClickedApply")
+    gamepad_clicked_back = Signal(bool, name="gamepadClickedBack")
     gamepad_axis_left = Signal(bool, name="gamepadAxisLeft")
     gamepad_axis_right = Signal(bool, name="gamepadAxisRight")
 
@@ -46,6 +47,7 @@ class App(QtCore.QObject):
         self.gamepad.apply_clicked = lambda: self.gamepad_clicked_apply.emit(True)
         self.gamepad.l_clicked = lambda: self.gamepad_axis_left.emit(True)
         self.gamepad.r_clicked = lambda: self.gamepad_axis_right.emit(True)
+        self.gamepad.back_clicked = lambda: self.gamepad_clicked_back.emit(True)
 
         self.setup()
 
@@ -86,6 +88,9 @@ class App(QtCore.QObject):
                 # Автозапуск игры:
                 # PW_GUI_DISABLED_CS=1
                 # START_FROM_STEAM=1
+
+                # Remove extra env in the beginning
+                _exec = _exec[4:len(_exec)]
                 _exec = f"env START_FROM_STEAM=1 {_exec}"
 
                 self.games_model.add_game(Game(name=_name, icon=_icon, exec=_exec))
@@ -113,7 +118,6 @@ class App(QtCore.QObject):
     @Slot(str)
     def start_game(self, exec):
         self.game_started.emit(True)
-
         def run_in_thread(t, _exec):
             t.running_game_process = subprocess.Popen(
                 _exec,

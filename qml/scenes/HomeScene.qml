@@ -10,7 +10,9 @@ Rectangle {
     width: 640
     height: 480
 
-    onVisibleChanged: {tabs.visible = container.visible}
+    onVisibleChanged: {
+        tabs.visible = container.visible;
+    }
 
     // Rectangle {
     //     id: rectangle
