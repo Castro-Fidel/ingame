@@ -218,8 +218,9 @@ Rectangle {
         }
         function onGamepadClickedApply(done){
             if(!visible) return;
+            console.log("onGamepadClickedApply", tabs.focusedItems);
             let c = gamesGrid.children;
-            c[tabs.focusedItems].clicked();
+            c[tabs.focusedItems].press();
         }
     }
 

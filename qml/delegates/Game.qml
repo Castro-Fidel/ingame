@@ -17,16 +17,21 @@ C.Button {
         id: hoverArea
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: "AllButtons"
         onClicked: function(){
-            // console.log(game.title);
-            gameInfoScene.title = game.gameTitle;
-            gameInfoScene.icon = game.gameIcon;
-            gameInfoScene.exec = game.gameExec;
-            window.scene = SceneConstants.gameInfoScene;
+            if(!game.visible) return;
+            game.press();
         }
     }
 
-
+    function press(){
+        if(!visible) return;
+        console.log(game.title);
+        gameInfoScene.title = game.gameTitle;
+        gameInfoScene.icon = game.gameIcon;
+        gameInfoScene.exec = game.gameExec;
+        window.scene = SceneConstants.gameInfoScene;
+    }
 
 
 
