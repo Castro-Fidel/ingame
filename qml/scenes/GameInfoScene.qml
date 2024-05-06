@@ -9,6 +9,18 @@ Rectangle {
     property string icon: ""
     property string exec: ""
 
+    onVisibleChanged: function(){
+        // if(visible){
+        if(window.scene !== S.gameInfoScene) return;
+        container.setItemsFocus(0);
+        // }
+    }
+
+    Keys.onEscapePressed: function(){
+        if(window.scene !== S.gameInfoScene) return;
+        back.clicked();
+    }
+
     id: container
     x: 0
     y: 0
@@ -65,6 +77,7 @@ Rectangle {
     }
 
     Button {
+        id: runGameButton
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.leftMargin: 142
@@ -72,6 +85,7 @@ Rectangle {
         text: "Run game"
 
         onClicked: function(){
+            if(window.scene !== S.gameInfoScene) return;
             if(core_app === undefined) return;
             core_app.start_game(container.exec);
         }
@@ -80,34 +94,53 @@ Rectangle {
     // LOGIC
 
     property int focusedItems: 0;
+
+    function focusElements(){
+        return [
+            runGameButton,
+            back
+        ];
+    }
+
     function applyItemsFocus(inc){
-        let c = children;
+        let c = focusElements();
+        let i = focusedItems;
 
-        focusedItems += inc;
-        if(focusedItems >= c.length)
-            focusedItems = 0;
+        i += inc;
+        if(i >= c.length)
+            i = 0;
 
-        if(focusedItems < 0)
-            focusedItems = c.length - 1;
+        if(i < 0)
+            i = c.length - 1;
 
-        c[focusedItems].forceActiveFocus();
+        setItemsFocus(i);
         // c[focusedItems].clicked();
+    }
+
+    function setItemsFocus(i){
+        let c = focusElements();
+        focusedItems = i;
+        c[i].forceActiveFocus();
     }
 
     Connections {
         target: core_app
         function onGamepadAxisLeft(done){
-            if(!visible) return;
+            if(window.scene !== S.gameInfoScene) return;
             container.applyItemsFocus(-1)
         }
         function onGamepadAxisRight(done){
-            if(!visible) return;
+            if(window.scene !== S.gameInfoScene) return;
             container.applyItemsFocus(1)
         }
         function onGamepadClickedApply(done){
-            if(!visible) return;
-            let c = container.children;
+            if(window.scene !== S.gameInfoScene) return;
+            let c = focusElements();
             c[container.focusedItems].clicked();
+        }
+        function onGamepadClickedBack(done){
+            if(window.scene !== S.gameInfoScene) return;
+            back.clicked();
         }
     }
 

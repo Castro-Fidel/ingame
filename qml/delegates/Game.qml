@@ -3,8 +3,9 @@ import "../constants/scene.js" as SceneConstants
 //import "../components/" as C
 
 import QtQuick.Controls as C
+// Подключить для работы с типом объекта LinearGradient
 
-// Карточка игры
+
 C.Button {
     property string gameTitle: "Generic title"
     property string gameIcon: ""
@@ -17,18 +18,23 @@ C.Button {
         id: hoverArea
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: "AllButtons"
         onClicked: function(){
-            // console.log(game.title)
-            gameInfoScene.title = game.gameTitle;
-            gameInfoScene.icon = game.gameIcon;
-            gameInfoScene.exec = game.gameExec;
-
-
-
-
-           window.scene = SceneConstants.gameInfoScene;
+            if(!game.visible) return;
+            game.press();
         }
     }
+
+    function press(){
+        if(!visible) return;
+        gameInfoScene.title = game.gameTitle;
+        gameInfoScene.icon = game.gameIcon;
+        gameInfoScene.exec = game.gameExec;
+        window.scene = SceneConstants.gameInfoScene;
+    }
+
+
+
     //
     background: Rectangle {
         id: rect
@@ -64,40 +70,51 @@ C.Button {
     // Анимации при изменениях состояний
     transitions: [
         Transition  {
-            from: ""; to: "focus"
-            reversible: false
+            from: "";
+            to: "focus";
+            reversible: false;
             SequentialAnimation  {
                 NumberAnimation{
-                        target: rect; property: "border.width"
-                        duration: 100
-                        to: Math.max(game.width / 100 * 4,4)        // пока x не будет равно 250
-                        easing.type: Easing.InOutQuad
-                    }
-                NumberAnimation {target: rect; property: "border.width"; duration: 100 }
+                    target: rect;
+                    property: "border.width"
+                    duration: 100
+                    to: Math.max(game.width / 100 * 4,4)        // пока x не будет равно 250
+                    easing.type: Easing.InOutQuad
+                }
+                NumberAnimation {
+                    target: rect;
+                    property: "border.width";
+                    duration: 100;
+                }
             }
         },
         Transition {
-            from: ""; to: "hover"
+            from: "";
+            to: "hover";
             reversible: true
-            NumberAnimation {target: game ; property: "scale"; duration: 100 }
+            NumberAnimation {
+                target: game;
+                property: "scale";
+                duration: 100;
+            }
         }
     ]
     // вообще должно быть в Transition focus но оно там не рнаботает :(
-    SequentialAnimation{
-        id:anim
-        running: game.activeFocus ? true: false
+    SequentialAnimation {
+        id: anim
+        running: game.activeFocus ? true : false
         loops: Animation.Infinite
         OpacityAnimator {
-            target:rect ;
+            target: rect;
             from: 1;
             to: 0.4;
-            duration: 1000
+            duration: 1000;
         }
         OpacityAnimator {
             target: rect;
             from: 0.4;
             to: 1;
-            duration: 1000
+            duration: 1000;
         }
     }
 
@@ -113,15 +130,25 @@ C.Button {
 
         // Градиент + название игры
         Rectangle {
-            id:bgNameGrad
+            id: bgNameGrad
             opacity: 0
             anchors.fill: parent
-            gradient:Gradient {
-                        GradientStop { position: 0.6; color: "#00000000" }
-                        GradientStop { position: 1.0; color: "#a0000000" }
-                    }
-            Behavior on opacity{
-                NumberAnimation {target: bgNameGrad; property: "opacity"; duration: 200 }
+            gradient: Gradient {
+                GradientStop {
+                    position: 0.6;
+                    color: "#00000000";
+                }
+                GradientStop {
+                    position: 1.0;
+                    color: "#a0000000";
+                }
+            }
+            Behavior on opacity {
+                NumberAnimation {
+                    target: bgNameGrad;
+                    property: "opacity";
+                    duration: 200;
+                }
             }
             // Название игры
             Text {
@@ -140,5 +167,5 @@ C.Button {
             }
         }
 
-    } 
+    }
 }

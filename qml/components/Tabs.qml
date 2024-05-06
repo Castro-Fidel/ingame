@@ -5,14 +5,12 @@ import "../delegates"
 import "../constants/tabs.js" as TabConstants
 import "../constants/style.js" as Style
 import "../components" as TopMenuBut
+import "../constants/scene.js" as S
 
-
-
+// TODO: code refactor
 Rectangle {
     property string currentTab: TabConstants.gamesTab
     property var activeButtonTab: buttonGames
-
-
 
     id: tabs
     x: 100
@@ -20,18 +18,32 @@ Rectangle {
     width: 640
     height: 480
     color: Style.backgroundColor
-    onVisibleChanged: {tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;console.log("tabButtons.x = " + tabButtons.x);}
+    onVisibleChanged: {
+        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
+        tabButtons.x = tabButtons.tempX;
+        console.log("tabButtons.x = " + tabButtons.x);
+    }
 
-    Component.onCompleted:{tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;console.log("Tabs completed!");}
-    onWidthChanged: function(){tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;}
-    onHeightChanged: function(){tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;}
+    Component.onCompleted: {
+        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
+        tabButtons.x = tabButtons.tempX;
+        console.log("Tabs completed!");
+    }
+    onWidthChanged: function(){
+        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
+        tabButtons.x = tabButtons.tempX;
+    }
+    onHeightChanged: function(){
+        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
+        tabButtons.x = tabButtons.tempX;
+    }
 
     Image {
-            id: bg
-            anchors.fill: parent
-            fillMode: Image.PreserveAspectCrop
-            source: '../images/bg3.svg'
-        }
+        id: bg
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectCrop
+        source: '../images/bg3.svg'
+    }
     // Кнопки навигации
     ColumnLayout{
         id:topNavigation
@@ -44,51 +56,73 @@ Rectangle {
 
             //anchors.leftMargin: parent.width / 10
             //anchors.rightMargin: parent.width / 10
-            Component.onCompleted:{tabButtons.changeButtonActiveTab(tabs.activeButtonTab);tabButtons.x = tabButtons.tempX;console.log("tabButtons completed!");}
+            Component.onCompleted: {
+                tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
+                tabButtons.x = tabButtons.tempX;
+                console.log("tabButtons completed!");
+            }
 
             Layout.bottomMargin: buttonSystemManagement.height / 2
             Layout.topMargin: buttonSystemManagement.height / 3
             x:100
             // Состояния
             states: [
-                State {name: "ClickTabButton";when:tabButtons.toggle;PropertyChanges {target: tabButtons;x:tempX}},
-                State {name: "";when:1 == 1}
+                State {
+                    name: "ClickTabButton";
+                    when: tabButtons.toggle;
+                    PropertyChanges {
+                        target: tabButtons;
+                        x:tempX
+                    }
+                },
+                State {
+                    name: "";
+                    when: 1 == 1
+                }
             ]
             // Анимации при изменениях состояний
             transitions:
-                Transition  {
-                    from: ""; to: "ClickTabButton"
-                    PropertyAnimation{
-                        id:clickTabButtonAnimation
-                        //from: tempX
+                Transition {
+                    from: "";
+                    to: "ClickTabButton";
+                    PropertyAnimation {
+                        id: clickTabButtonAnimation
+                        // from: tempX
                         duration: 200
-                        property:"x"
-                        //анимациюю можно будет поменять в любое время
+                        property: "x"
+                        // анимацию можно будет поменять в любое время
                         easing.type: Easing.InOutCirc
                     }
                 }
             // Функция перемещения кнопок
+            // TODO: OPTIMIZE (REDUCE EXTRA FOR LOOP)
             function changeButtonActiveTab(ButtonId){
-                let index = 0
-                let left_distance = 0
-                for(var i = 0; i < tabButtons.children.length; ++i)
-                    if(children[i]===ButtonId){
-                       index = i
-                       break
-                    }
-                for(i = 0; i < index; ++i)
-                    left_distance += spacing + children[i].width
-                tempX = topNavigation.width / 2 - tabButtons.children[index].width / 2 - left_distance
-                tabs.activeButtonTab.isActive = false
-                tabs.activeButtonTab = ButtonId
-                tabs.activeButtonTab.isActive = true
+                let index = 0;
+                let left_distance = 0;
+                let i = 0;
 
+                for(i = 0; i < tabButtons.children.length; ++i) {
+                    if (children[i] === ButtonId) {
+                        index = i
+                        break
+                    }
+                }
+
+                for(i = 0; i < index; ++i) {
+                    left_distance += spacing + children[i].width;
+                }
+
+                tempX = topNavigation.width / 2 - tabButtons.children[index].width / 2 - left_distance;
+                tabs.activeButtonTab.isActive = false;
+                tabs.activeButtonTab = ButtonId;
+                tabs.activeButtonTab.isActive = true;
             }
 
             TopMenuBut.TextButton {
-                id: buttonSystemManagement
-                text: TabConstants.systemManagementTab
-                width: 400
+                id: buttonSystemManagement;
+                text: TabConstants.systemManagementTab;
+                width: 400;
+
                 onClicked: function(){
                     tabButtons.x = tabButtons.tempX
                     tabButtons.changeButtonActiveTab(this)
@@ -191,10 +225,18 @@ Rectangle {
             scrolV.fromAnim = scrolV.position
             scrolV.position = (1.0 - scrolV.size) * y/gamesScroller.height
             scrolV.toAnim = (1.0 - scrolV.size) * y/gamesScroller.height
-            if(scrolV.toAnim != scrolV.fromAnim)scrollAnimation.start()
+            if(scrolV.toAnim != scrolV.fromAnim)
+                scrollAnimation.start()
         }
         // Анимация авто скролла
-        PropertyAnimation {to:scrolV.toAnim;from:scrolV.fromAnim;target:scrolV;id:scrollAnimation; property: "position" ;duration: 200 }
+        PropertyAnimation {
+            to: scrolV.toAnim;
+            from: scrolV.fromAnim;
+            target: scrolV;
+            id: scrollAnimation;
+            property: "position";
+            duration: 200;
+        }
 
         GridLayout {
             id: gamesGrid
@@ -209,7 +251,7 @@ Rectangle {
             anchors.leftMargin: rowSpacing * 2
             anchors.bottomMargin : 90
             anchors.topMargin: Math.floor( gamesScroller.width / 100 * 1.5)
-            rowSpacing:Math.floor( gamesScroller.width / 100 * 1.5)
+            rowSpacing: Math.floor( gamesScroller.width / 100 * 1.5)
             columnSpacing: rowSpacing
 
             // Повторитель
@@ -220,9 +262,16 @@ Rectangle {
                     gameTitle: model.name
                     gameExec: model.exec
                     gameIcon: model.icon
-                    Layout.bottomMargin : (index - index % gamesGrid.columns)/ gamesGrid.columns === gamesGrid.rows-1 ? gamesGrid.rowSpacing*2 : 0
-                    onFocusChanged: if(focus) { gamesScroller.scrollToY(y); }
-                    Layout.preferredWidth: (gamesScroller.width - (gamesGrid.columns -1) * gamesGrid.rowSpacing - gamesGrid.anchors.rightMargin- gamesGrid.anchors.leftMargin) / gamesGrid.columns
+                    Layout.bottomMargin :
+                        (index - index % gamesGrid.columns) /
+                        gamesGrid.columns === gamesGrid.rows - 1 ? gamesGrid.rowSpacing * 2 : 0
+                    onFocusChanged: if(focus) {
+                        gamesScroller.scrollToY(y);
+                    }
+                    Layout.preferredWidth:
+                        (gamesScroller.width - (gamesGrid.columns -1) *
+                        gamesGrid.rowSpacing - gamesGrid.anchors.rightMargin - gamesGrid.anchors.leftMargin)
+                        / gamesGrid.columns
                     Layout.preferredHeight: Layout.preferredWidth / 2 * 3
                 }
             }
@@ -234,14 +283,22 @@ Rectangle {
 
 
     // LOGIC
-    property int focusedTabs: 0;
     property int focusedItems: 0;
+    property int focusedTabs: 0;
+
+    function getTabs(){
+        return [
+            buttonSystemManagement,
+            buttonGames,
+            testbut1,
+            testbut2
+        ];
+    }
 
     function applyTabsFocus(inc){
-        if(!visible)
-            return;
+        if(window.scene !== S.homeScene) return;
 
-        let c = row.children;
+        let c = tabs.getTabs();
 
         tabs.focusedTabs += inc;
         if(tabs.focusedTabs >= c.length)
@@ -250,19 +307,14 @@ Rectangle {
         if(tabs.focusedTabs < 0)
             tabs.focusedTabs = c.length - 1;
 
-        c[tabs.focusedTabs].forceActiveFocus();
-        c[tabs.focusedTabs].clicked();
-
-        /* if (c[i].focus) {
-            console.log("focus found");
-            c[i].nextItemInFocusChain().forceActiveFocus()
-            break
-        } */
+        let item = c[tabs.focusedTabs];
+        item.released();
+        item.clicked();
+        // tabButtons.changeButtonActiveTab(item);
     }
 
     function applyItemsFocus(inc){
-        if(!gamesScroller.visible)
-            return;
+        if(window.scene !== S.homeScene) return;
 
         let c = gamesGrid.children;
 
@@ -281,25 +333,25 @@ Rectangle {
     Connections {
         target: core_app
         function onGamepadClickedLB(done){
-            if(!visible) return;
+            if(window.scene !== S.homeScene) return;
             tabs.applyTabsFocus(-1)
         }
         function onGamepadClickedRB(done){
-            if(!visible) return;
+            if(window.scene !== S.homeScene) return;
             tabs.applyTabsFocus(1)
         }
         function onGamepadAxisLeft(done){
-            if(!visible) return;
+            if(window.scene !== S.homeScene) return;
             tabs.applyItemsFocus(-1)
         }
         function onGamepadAxisRight(done){
-            if(!visible) return;
+            if(window.scene !== S.homeScene) return;
             tabs.applyItemsFocus(1)
         }
         function onGamepadClickedApply(done){
-            if(!visible) return;
+            if(window.scene !== S.homeScene) return;
             let c = gamesGrid.children;
-            c[tabs.focusedItems].clicked();
+            c[tabs.focusedItems].press();
         }
     }
 

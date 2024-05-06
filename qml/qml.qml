@@ -53,7 +53,7 @@ Window {
 
     // Решение бага с изменением положений кнопок вкладок через opacity и enabled - ЭТО КОСТЫЛЬ!!!
     HomeScene {
-        //visible: scene == SceneConstants.homeScene
+        // visible: scene == SceneConstants.homeScene
         opacity: scene == SceneConstants.homeScene
         enabled: scene == SceneConstants.homeScene
 
@@ -62,7 +62,7 @@ Window {
     }
 
     GameInfoScene {
-        //visible: scene == SceneConstants.gameInfoScene
+        // visible: scene == SceneConstants.gameInfoScene
         opacity: scene == SceneConstants.gameInfoScene
         enabled: scene == SceneConstants.gameInfoScene
 
@@ -71,7 +71,7 @@ Window {
     }
 
     RunningScene {
-        //visible: scene == SceneConstants.runningScene
+        // visible: scene == SceneConstants.runningScene
         opacity: scene == SceneConstants.runningScene
         enabled: scene == SceneConstants.runningScene
 

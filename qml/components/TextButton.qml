@@ -8,9 +8,9 @@ C.Button {
     property bool isActive: false
     hoverEnabled: true
 
-    //width: parent.width / 100 * 1.5
-    //height: 200
-    //text: "Size me!"
+    // width: parent.width / 100 * 1.5
+    // height: 200
+    // text: "Size me!"
 
     contentItem: Text {
         id: text
@@ -21,7 +21,7 @@ C.Button {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        //fontSizeMode: Text.Fit
+        // fontSizeMode: Text.Fit
         color: 'white'
         opacity: 0.8
     }
@@ -34,7 +34,7 @@ C.Button {
         width: 0
         anchors.horizontalCenter: root.horizontalCenter
         anchors.top: root.top
-        //        anchors.bottom:root.bottom
+        // anchors.bottom:root.bottom
 
     }
 
@@ -43,15 +43,23 @@ C.Button {
         // Карточка в фокуске
         State {
             name: "active"; when: isActive
-            PropertyChanges { target: line; width: parent.width;}
-            PropertyChanges { target: text; opacity:1 }
+            PropertyChanges {
+                target: line;
+                width: parent.width;
+            }
+            PropertyChanges {
+                target: text;
+                opacity: 1;
+            }
         },
         // На карточку навели курсор мыши
         State {
             name: "hover"; when: hovered && !isActive
             //PropertyChanges { target: line; width: parent.width;}
-            PropertyChanges { target: text; opacity:1 }
-
+            PropertyChanges {
+                target: text;
+                opacity: 1;
+            }
         }
     ]
 
@@ -61,13 +69,17 @@ C.Button {
             to: "active"
             reversible: true
             id:activeAnim
-            ParallelAnimation  {
-                NumberAnimation{
-                        target: line; property: "width"
-                        duration: 200
-                        easing.type: Easing.InOutQuad
-                    }
-                NumberAnimation {target: text; property: "opacity"; duration: 100 }
+            ParallelAnimation {
+                NumberAnimation {
+                    target: line; property: "width"
+                    duration: 200
+                    easing.type: Easing.InOutQuad
+                }
+                NumberAnimation {
+                    target: text;
+                    property: "opacity";
+                    duration: 100
+                }
             }
         },
 
@@ -76,11 +88,15 @@ C.Button {
             reversible: true
             ParallelAnimation  {
                 NumberAnimation{
-                        target: line; property: "width"
-                        duration: 200
-                        easing.type: Easing.InOutQuad
-                    }
-                NumberAnimation {target: text; property: "opacity"; duration: 100 }
+                    target: line; property: "width"
+                    duration: 200
+                    easing.type: Easing.InOutQuad
+                }
+                NumberAnimation {
+                    target: text;
+                    property: "opacity";
+                    duration: 100
+                }
             }
         }
     ]
