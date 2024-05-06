@@ -88,6 +88,9 @@ class App(QtCore.QObject):
                 # Автозапуск игры:
                 # PW_GUI_DISABLED_CS=1
                 # START_FROM_STEAM=1
+
+                # Remove extra env in the beginning
+                _exec = _exec[4:len(_exec)]
                 _exec = f"env START_FROM_STEAM=1 {_exec}"
 
                 self.games_model.add_game(Game(name=_name, icon=_icon, exec=_exec))
@@ -115,7 +118,7 @@ class App(QtCore.QObject):
     @Slot(str)
     def start_game(self, exec):
         self.game_started.emit(True)
-
+        print(exec)
         def run_in_thread(t, _exec):
             t.running_game_process = subprocess.Popen(
                 _exec,
