@@ -8,6 +8,11 @@ import "constants/scene.js" as SceneConstants
 Window {
     property string scene: SceneConstants.homeScene
 
+    Loader{
+         id : ld
+         anchors.fill: parent;
+    }
+
     Connections {
         target: core_app
         function onGameStarted(done) {
@@ -45,20 +50,31 @@ Window {
     visible: true
     title: qsTr("Launcher")
 
+
+    // Решение бага с изменением положений кнопок вкладок через opacity и enabled - ЭТО КОСТЫЛЬ!!!
     HomeScene {
-        visible: scene == SceneConstants.homeScene
+        //visible: scene == SceneConstants.homeScene
+        opacity: scene == SceneConstants.homeScene
+        enabled: scene == SceneConstants.homeScene
+
         id: homeScene
         anchors.fill: parent
     }
 
     GameInfoScene {
-        visible: scene == SceneConstants.gameInfoScene
+        //visible: scene == SceneConstants.gameInfoScene
+        opacity: scene == SceneConstants.gameInfoScene
+        enabled: scene == SceneConstants.gameInfoScene
+
         id: gameInfoScene
         anchors.fill: parent
     }
 
     RunningScene {
-        visible: scene == SceneConstants.runningScene
+        //visible: scene == SceneConstants.runningScene
+        opacity: scene == SceneConstants.runningScene
+        enabled: scene == SceneConstants.runningScene
+
         id: runningScene
         anchors.fill: parent
     }

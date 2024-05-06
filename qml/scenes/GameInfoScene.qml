@@ -9,7 +9,6 @@ Rectangle {
     property string icon: ""
     property string exec: ""
 
-
     id: container
     x: 0
     y: 0
@@ -35,7 +34,6 @@ Rectangle {
         width: 64
         height: 64
         imageUrl: "../images/back.svg"
-
         onClicked: function(){
             window.scene = S.homeScene;
         }
