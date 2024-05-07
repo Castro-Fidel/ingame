@@ -30,7 +30,15 @@ C.Button {
         gameInfoScene.title = game.gameTitle;
         gameInfoScene.icon = game.gameIcon;
         gameInfoScene.exec = game.gameExec;
+        var globalCoordinates = mapToItem(null,0,0)
+        console.log("game coord - X: " + globalCoordinates.x + " y: " + globalCoordinates.y)
+        gameInfoScene.startX = globalCoordinates.x
+        gameInfoScene.startY = globalCoordinates.y
+        gameInfoScene.imgWight = game.width*1.05
+        gameInfoScene.imgHight = game.height*1.05
+
         window.scene = SceneConstants.gameInfoScene;
+        gameInfoScene.startAnimation()
     }
 
 

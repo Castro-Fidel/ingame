@@ -59,6 +59,15 @@ Window {
 
         id: homeScene
         anchors.fill: parent
+
+
+        Behavior on opacity {
+            NumberAnimation {
+                target: homeScene;
+                property: "opacity";
+                duration: 300;
+            }
+        }
     }
 
     GameInfoScene {
@@ -68,6 +77,14 @@ Window {
 
         id: gameInfoScene
         anchors.fill: parent
+
+        Behavior on opacity {
+            NumberAnimation {
+                target: gameInfoScene;
+                property: "opacity";
+                duration: 300;
+            }
+        }
     }
 
     RunningScene {

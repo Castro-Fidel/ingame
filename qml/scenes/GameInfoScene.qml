@@ -5,9 +5,52 @@ import "../components"
 import "../constants/scene.js" as S
 
 Rectangle {
+    id: container
+    x: 0
+    y: 0
+    width: 640
+    height: 480
+
+
     property string title: "Generic title"
     property string icon: ""
     property string exec: ""
+    // поля для анимации при открытии
+    property double startX: 0
+    property double startY: 0
+    // поля свойств изображения
+    property double imgWight: 0
+    property double imgHight: 0
+
+     function startAnimation(){
+
+
+         // gameRect.anchors.leftMargin= 8
+         // gameRect.anchors.topMargin= 70
+         // gameRect.anchors.left= gameRect.parent.left
+         // gameRect.anchors.top= gameRect.parent.top
+
+
+    }
+     states: State {
+             name: "completed"
+             AnchorChanges {
+                 target: gameRect;
+                 //anchors.leftMargin: 8
+                 //anchors.topMargin: 70
+                 anchors.left: gameRect.parent.left
+                 anchors.top: gameRect.parent.top
+             }
+         }
+
+         transitions: Transition {
+             // smoothly reanchor myRect and move into new position
+             AnchorAnimation { duration: 1000 }
+         }
+
+         Component.onCompleted: container.state = "completed"
+
+
 
     onVisibleChanged: function(){
         // if(visible){
@@ -21,11 +64,16 @@ Rectangle {
         back.clicked();
     }
 
-    id: container
-    x: 0
-    y: 0
-    width: 640
-    height: 480
+
+
+
+    //
+    Item {
+        id: startPos
+        x: startX
+        y: startY
+
+    }
 
     Rectangle {
         id: rectangle
@@ -51,17 +99,9 @@ Rectangle {
         }
     }
 
-    Image {
-        id: gameImage
-        width: 128
-        height: 128
-        anchors.left: parent.left
-        anchors.top: parent.top
-        source: container.icon
-        anchors.leftMargin: 8
-        anchors.topMargin: 70
-        fillMode: Image.PreserveAspectFit
-    }
+
+
+
 
     Text {
         id: title
@@ -142,6 +182,48 @@ Rectangle {
             if(window.scene !== S.gameInfoScene) return;
             back.clicked();
         }
+    }
+
+
+
+
+    Rectangle{
+        id:gameRect
+        width: imgWight
+        height: imgHight
+        color:"#000000"
+
+
+
+        anchors.left: startPos.left
+        anchors.top: startPos.top
+
+
+        Image {
+            id: gameImage
+            anchors.fill: parent
+
+            source: container.icon
+            fillMode: Image.PreserveAspectFit
+
+        }
+
+
+        Behavior on x {
+            NumberAnimation {
+                target: gameRect;
+                property: "x";
+                duration: 300;
+            }
+        }
+        Behavior on y {
+            NumberAnimation {
+                target: gameRect;
+                property: "y";
+                duration: 300;
+            }
+        }
+
     }
 
 }
