@@ -25,30 +25,41 @@ Rectangle {
      function startAnimation(){
 
 
-         // gameRect.anchors.leftMargin= 8
-         // gameRect.anchors.topMargin= 70
-         // gameRect.anchors.left= gameRect.parent.left
-         // gameRect.anchors.top= gameRect.parent.top
+
+         startPos.x = startX
+         startPos.y = startY
+         gameRect.anchors.left = startPos.left
+         gameRect.anchors.top = startPos.top
+
+
+         container.state = "completed"
+
 
 
     }
-     states: State {
-             name: "completed"
-             AnchorChanges {
-                 target: gameRect;
-                 //anchors.leftMargin: 8
-                 //anchors.topMargin: 70
-                 anchors.left: gameRect.parent.left
-                 anchors.top: gameRect.parent.top
-             }
+     states:[
+        State {
+            name: "finish"
+            AnchorChanges {
+                target: gameRect;
+                anchors.left: startPos.left
+                anchors.top: startPos.top
+            }
+        },
+        State {
+            name: "completed"
+            AnchorChanges {
+                target: gameRect;
+                anchors.left: finishPos.left
+                anchors.top: finishPos.top
+            }
          }
+     ]
 
          transitions: Transition {
              // smoothly reanchor myRect and move into new position
-             AnchorAnimation { duration: 1000 }
+             AnchorAnimation { duration: 300 }
          }
-
-         Component.onCompleted: container.state = "completed"
 
 
 
@@ -67,13 +78,24 @@ Rectangle {
 
 
 
-    //
+    // Start pos
     Item {
         id: startPos
         x: startX
         y: startY
 
     }
+    // finish pos
+    Item {
+        id: finishPos
+        anchors.left: gameRect.parent.left
+        anchors.top: gameRect.parent.top
+
+        anchors.leftMargin: 8
+        anchors.topMargin: 70
+    }
+
+
 
     Rectangle {
         id: rectangle
@@ -96,6 +118,11 @@ Rectangle {
         imageUrl: "../images/back.svg"
         onClicked: function(){
             window.scene = S.homeScene;
+            //gameRect.anchors.leftMargin= 0
+            //gameRect.anchors.topMargin= 0
+
+            container.state = "finish"
+
         }
     }
 
@@ -195,8 +222,6 @@ Rectangle {
 
 
 
-        anchors.left: startPos.left
-        anchors.top: startPos.top
 
 
         Image {
