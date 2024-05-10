@@ -15,9 +15,12 @@ C.Button {
     contentItem: Text {
         id: text
         text: root.text
-        font.family: "Helvetica"
+
+        font.family: globalFont.font
+        font.weight: 400
+        font.styleName: globalFont.font.styleName
         font.pointSize: 14
-        font.bold : true
+        //font.bold : true
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
@@ -50,6 +53,10 @@ C.Button {
             PropertyChanges {
                 target: text;
                 opacity: 1;
+            }
+            PropertyChanges {
+                target: text;
+                font.weight: 800;
             }
         },
         // На карточку навели курсор мыши

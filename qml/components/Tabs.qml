@@ -15,9 +15,9 @@ Rectangle {
     id: tabs
     x: 100
     y: 0
-    width: 640
-    height: 480
-    color: Style.backgroundColor
+    anchors.fill: parent
+
+    //color: Style.backgroundColor
     onVisibleChanged: {
         tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
         tabButtons.x = tabButtons.tempX;
@@ -38,12 +38,6 @@ Rectangle {
         tabButtons.x = tabButtons.tempX;
     }
 
-    Image {
-        id: bg
-        anchors.fill: parent
-        fillMode: Image.PreserveAspectCrop
-        source: '../images/bg3.svg'
-    }
     // Кнопки навигации
     ColumnLayout{
         id:topNavigation
@@ -244,14 +238,14 @@ Rectangle {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            columns: 6
+            columns: 5
             rows: Math.max(Math.ceil(children.length / columns), 1)
 
             anchors.rightMargin: rowSpacing * 2
             anchors.leftMargin: rowSpacing * 2
             anchors.bottomMargin : 90
-            anchors.topMargin: Math.floor( gamesScroller.width / 100 * 1.5)
-            rowSpacing: Math.floor( gamesScroller.width / 100 * 1.5)
+            anchors.topMargin: Math.floor( gamesScroller.width / 100 * 3)
+            rowSpacing: Math.floor( gamesScroller.width / 100 * 3)
             columnSpacing: rowSpacing
 
             // Повторитель

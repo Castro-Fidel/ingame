@@ -12,6 +12,8 @@ Window {
          id : ld
          anchors.fill: parent;
     }
+    FontLoader { id: globalFont; source: "./fonts/OpenSans-VariableFont_wdth.ttf" }
+
 
     Connections {
         target: core_app
@@ -50,6 +52,12 @@ Window {
     visible: true
     title: qsTr("Launcher")
 
+    Image {
+        id: bg
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectCrop
+        source: './images/bg3.svg'
+    }
 
     // Решение бага с изменением положений кнопок вкладок через opacity и enabled - ЭТО КОСТЫЛЬ!!!
     HomeScene {
@@ -59,7 +67,6 @@ Window {
 
         id: homeScene
         anchors.fill: parent
-
 
         Behavior on opacity {
             NumberAnimation {

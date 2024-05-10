@@ -54,7 +54,7 @@ C.Button {
         anchors.centerIn: parent
         border.width: 0
         border.color: "#ffffff"
-        radius: 1
+        radius: 3
     }
 
     // Состояния
@@ -136,6 +136,7 @@ C.Button {
         source: game.gameIcon
         fillMode: Image.PreserveAspectFit
 
+
         // Градиент + название игры
         Rectangle {
             id: bgNameGrad
@@ -164,6 +165,8 @@ C.Button {
                 y: 439
                 height: 33
                 color: "#ffffff"
+                font.family: globalFont.font
+                font.weight: Font.Medium
                 text: game.gameTitle
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -176,4 +179,11 @@ C.Button {
         }
 
     }
+
+    Rectangle {
+          id: rectangleMask
+          anchors.fill: parent
+          radius: 1.5*height
+          visible: false
+      }
 }

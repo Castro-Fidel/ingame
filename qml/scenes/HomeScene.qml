@@ -7,8 +7,10 @@ Rectangle {
     id: container
     x: 0
     y: 0
-    width: 640
-    height: 480
+    anchors.fill: parent
+
+    color: "#00000000"
+
 
     onVisibleChanged: {
         tabs.visible = container.visible;
@@ -27,6 +29,8 @@ Rectangle {
     // }
 
     Tabs {
+        color: "#00000000"
+
         id: tabs
         anchors.left: parent.left
         anchors.right: parent.right

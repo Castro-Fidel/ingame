@@ -1,16 +1,18 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 
-import "../components"
+
+//import "../components"
+import "../constants/controller.js" as ControllerButtons
 import "../constants/scene.js" as S
 
 Rectangle {
-    id: container
+    id: root
     x: 0
     y: 0
-    width: 640
-    height: 480
-
+    anchors.fill: parent
+    color: "#00000000"
 
     property string title: "Generic title"
     property string icon: ""
@@ -22,20 +24,17 @@ Rectangle {
     property double imgWight: 0
     property double imgHight: 0
 
-     function startAnimation(){
-
-
+    function startAnimation(){
 
          startPos.x = startX
          startPos.y = startY
          gameRect.anchors.left = startPos.left
          gameRect.anchors.top = startPos.top
+         runGameButton.focus = true
+         // gameRect.width = startPos.Layout.preferredWidth
+         // gameRect.Height = startPos.Layout.preferredHeight
 
-
-         container.state = "completed"
-
-
-
+         root.state = "completed"
     }
      states:[
         State {
@@ -45,6 +44,12 @@ Rectangle {
                 anchors.left: startPos.left
                 anchors.top: startPos.top
             }
+            PropertyChanges {
+                target: gameRect
+                width: imgWight
+                height: imgHight
+            }
+
         },
         State {
             name: "completed"
@@ -52,6 +57,11 @@ Rectangle {
                 target: gameRect;
                 anchors.left: finishPos.left
                 anchors.top: finishPos.top
+            }
+            PropertyChanges {
+                target: gameRect
+                width: finishPos.width
+                height: finishPos.height
             }
          }
      ]
@@ -66,7 +76,7 @@ Rectangle {
     onVisibleChanged: function(){
         // if(visible){
         if(window.scene !== S.gameInfoScene) return;
-        container.setItemsFocus(0);
+        root.setItemsFocus(0);
         // }
     }
 
@@ -76,87 +86,232 @@ Rectangle {
     }
 
 
-
-
-    // Start pos
-    Item {
-        id: startPos
-        x: startX
-        y: startY
-
-    }
-    // finish pos
-    Item {
-        id: finishPos
-        anchors.left: gameRect.parent.left
-        anchors.top: gameRect.parent.top
-
-        anchors.leftMargin: 8
-        anchors.topMargin: 70
-    }
-
-
-
-    Rectangle {
-        id: rectangle
-        height: 64
-        color: "#2b2b2b"
+    ColumnLayout{
+        // anchors.fill:parent
         anchors.left: parent.left
-        anchors.right: parent.right
         anchors.top: parent.top
-        anchors.rightMargin: 0
-        anchors.leftMargin: 0
-        anchors.topMargin: 0
-    }
+        anchors.fill:parent
+        id: content
 
-    ButtonImage {
-        id: back
-        x: 0
-        y: 0
-        width: 64
-        height: 64
-        imageUrl: "../images/back.svg"
-        onClicked: function(){
-            window.scene = S.homeScene;
-            //gameRect.anchors.leftMargin= 0
-            //gameRect.anchors.topMargin= 0
 
-            container.state = "finish"
+
+        anchors.leftMargin: parent.width / 100 * 3
+        anchors.rightMargin: parent.width / 100 * 3
+        anchors.topMargin: parent.height / 100 * 3
+
+        spacing: 6
+        ItemGroup{
+            id: topPanel
+
+            Button {
+                id: back
+                background.opacity: 0.0
+                opacity: 0.8
+                text:"Back"
+                width: text.contentWidth + backImg.width + 5
+                hoverEnabled: true
+                contentItem: Text {
+                    id: text
+                    text: back.text
+                    font.pixelSize:Math.max(19,root.height / 100 * 3.2)
+
+                    font.family: globalFont.font
+                    font.weight: 500
+                    font.styleName: globalFont.font.styleName
+                    color: 'white'
+                    verticalAlignment: Text.AlignVCenter
+                    anchors.left: backImg.right
+                }
+                Image {
+                    id: backImg
+                    source: "../icons/back.svg"
+                    fillMode: Image.Tile
+                    sourceSize.width: text.font.pixelSize * 2
+                    sourceSize.height: text.font.pixelSize * 2
+                    anchors.verticalCenter: back.verticalCenter
+                    anchors.rightMargin: 5
+                }
+                onClicked: function(){
+                   window.scene = S.homeScene;
+                   root.state = "finish"
+                }
+                // Состояния
+                states: [
+                    // Карточка в фокуске
+                    State {
+                        name: "focus"; when: back.activeFocus
+                        PropertyChanges {
+                            target: back;
+                            opacity: 1;
+                        }
+                        PropertyChanges {
+                            target: text;
+                            font.weight: 800;
+                        }
+                    },
+                    // На карточку навели курсор мыши
+                    State {
+                        name: "hover"; when: back.hovered
+                        PropertyChanges {
+                            target: back;
+                            opacity: 1;
+                        }
+                    }
+                ]
+                // Анимации при изменениях состояний
+                transitions: Transition  {
+                    //to: "focus"
+                    reversible: true
+                    NumberAnimation {
+                        //target: back;
+                        property: "opacity";
+                        duration: 100
+                    }
+                }
+            }
+        }
+        Rectangle{
+            // Start pos
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color : "#00000000"
+
+            //width: parent.width
+            Item {
+                id: startPos
+                x: startX
+                y: startY
+            }
+            // finish pos
+            Rectangle {
+                id: finishPos
+                //enabled: false
+                anchors.left: gameRect.parent.left
+                anchors.top: gameRect.parent.top
+                anchors.leftMargin: root.width / 100 * 3
+                anchors.topMargin: root.width / 100 * 3
+                width:root.width / 100 * 20
+                height: width / 2 * 3
+                color:"#00000000"
+            }
+
+            Rectangle{
+                id:gameRect
+                width: imgWight
+                height: imgHight
+                color:"#000000"
+                Image {
+                    id: gameImage
+                    anchors.fill: parent
+                    source: root.icon
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                Behavior on x {
+                    NumberAnimation {
+                        target: gameRect;
+                        property: "x";
+                        duration: 300;
+                    }
+                }
+                Behavior on y {
+                    NumberAnimation {
+                        target: gameRect;
+                        property: "y";
+                        duration: 300;
+                    }
+                }
+            }
+
+            RowLayout{
+                id:info
+                width: parent.width - finishPos.width - root.width / 100 * 6
+                //height: content.height - topPanel.height
+                anchors.left: finishPos.right
+                anchors.top: finishPos.top
+
+                anchors.leftMargin: root.width / 100 * 3
+
+
+                ColumnLayout{
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    spacing: 40
+                    Text {
+                        id: title
+                        //width: root.width / 100 * 10
+                        Layout.maximumWidth: root.width / 100 * 30
+                        font.weight: 600
+                        wrapMode: Text.Wrap
+                        text: root.title
+                        //font.pixelSize: 32
+                        font.pixelSize:Math.max(19,root.height / 100 * 4.2)
+                        color: "white"
+                    }
+
+                    Button {
+                        id: runGameButton
+
+                        text: "Run game"
+                        focus: true
+                        onClicked: function(){
+                            if(window.scene !== S.gameInfoScene) return;
+                            if(core_app === undefined) return;
+                            core_app.start_game(root.exec);
+                        }
+                    }
+                }
+                Text {
+                    //anchors.top: info.top
+                    // anchors.right: info.right
+                    horizontalAlignment: Text.AlignJustif
+                    Layout.alignment:Qt.AlignRight| Qt.AlignTop
+                    //Layout.preferredWidth:
+
+
+
+
+                    id: title2
+                    //width: root.width / 100 * 10
+                    Layout.maximumWidth: root.width / 100 * 30
+                    Layout.maximumHeight: root.height / 100 * 70
+                    elide: Text.ElideRight
+
+
+                    wrapMode: Text.Wrap
+                    text: "SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfvSD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfvSD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv "
+                    font.pixelSize:Math.max(13,root.height / 100 * 2.2)
+                    color: "white"
+                }
+
+            }
+
+
+
+
+
 
         }
+
+
     }
 
 
 
 
 
-    Text {
-        id: title
-        height: 49
-        text: container.title
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        font.pixelSize: 32
-        anchors.leftMargin: 142
-        anchors.topMargin: 70
-        anchors.rightMargin: 8
-    }
 
-    Button {
-        id: runGameButton
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.leftMargin: 142
-        anchors.topMargin: 125
-        text: "Run game"
 
-        onClicked: function(){
-            if(window.scene !== S.gameInfoScene) return;
-            if(core_app === undefined) return;
-            core_app.start_game(container.exec);
-        }
-    }
+
+
+
+
+
+
+
+
+
 
     // LOGIC
 
@@ -194,16 +349,16 @@ Rectangle {
         target: core_app
         function onGamepadAxisLeft(done){
             if(window.scene !== S.gameInfoScene) return;
-            container.applyItemsFocus(-1)
+            root.applyItemsFocus(-1)
         }
         function onGamepadAxisRight(done){
             if(window.scene !== S.gameInfoScene) return;
-            container.applyItemsFocus(1)
+            root.applyItemsFocus(1)
         }
         function onGamepadClickedApply(done){
             if(window.scene !== S.gameInfoScene) return;
             let c = focusElements();
-            c[container.focusedItems].clicked();
+            c[root.focusedItems].clicked();
         }
         function onGamepadClickedBack(done){
             if(window.scene !== S.gameInfoScene) return;
@@ -214,41 +369,6 @@ Rectangle {
 
 
 
-    Rectangle{
-        id:gameRect
-        width: imgWight
-        height: imgHight
-        color:"#000000"
 
-
-
-
-
-        Image {
-            id: gameImage
-            anchors.fill: parent
-
-            source: container.icon
-            fillMode: Image.PreserveAspectFit
-
-        }
-
-
-        Behavior on x {
-            NumberAnimation {
-                target: gameRect;
-                property: "x";
-                duration: 300;
-            }
-        }
-        Behavior on y {
-            NumberAnimation {
-                target: gameRect;
-                property: "y";
-                duration: 300;
-            }
-        }
-
-    }
 
 }
