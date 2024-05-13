@@ -12,6 +12,7 @@ from desktop_parser import DesktopFile
 
 from ingame.models.Gamepad import Gamepad
 from ingame.models.GamesModel import Game, GamesModel
+from ingame.models.GameAgent import GameAgent
 from PySide6.QtCore import Property, Signal, Slot, QObject, Qt
 
 
@@ -48,6 +49,8 @@ class App(QtCore.QObject):
         self.gamepad.l_clicked = lambda: self.gamepad_axis_left.emit(True)
         self.gamepad.r_clicked = lambda: self.gamepad_axis_right.emit(True)
         self.gamepad.back_clicked = lambda: self.gamepad_clicked_back.emit(True)
+
+        self.agent = GameAgent()
 
         self.setup()
 
@@ -112,8 +115,16 @@ class App(QtCore.QObject):
         # event.accept()  # let the window close
         # else:
         #    event.ignore()
+        self.agent.clean_data()
 
     ### SLOTS ###
+
+    @Slot(str, result=dict)
+    def get_game_data(self, game_name):
+        print(game_name)
+        # self.agent.search_game("Risk of rain 2") # оригинальной osu в стиме нет =) Плейсхолдер
+        return self.agent.search_game(game_name)
+        # self.agent.search_game("asdjfiawefhawijefh")
 
     @Slot(str)
     def start_game(self, exec):

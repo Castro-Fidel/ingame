@@ -30,7 +30,19 @@ Rectangle {
         gameRect.anchors.left = startPos.left
         gameRect.anchors.top = startPos.top
         runGameButton.focus = true
-        root.state = "completed"
+        root.state = "completed";
+
+
+        let v = core_app.get_game_data(root.title);
+
+        let _t = v['title'];
+        let _d = v['desc'];
+        let _l = v['languages'];
+        let _r = v['reqs'];
+        // console.log(_t, _d, _l, _r);
+        let pretty_title = ((_t === undefined) ? "Нет информации об игре" : _t);
+        let pretty_description = ((_d === undefined) ? "Нет информации об игре" : _d);
+        description.text = "Наименование игры:\n" + pretty_title + "\n\nОписание игры:\n" + pretty_description;
     }
 
     states: [
@@ -72,6 +84,8 @@ Rectangle {
         // if(visible){
         if(window.scene !== S.gameInfoScene) return;
         root.setItemsFocus(0);
+        // console.log("Game data: ", v, _t, _d, _l, _r);
+
         // }
     }
 
@@ -323,24 +337,13 @@ Rectangle {
                 Text {
                     horizontalAlignment: Text.AlignJustif
                     Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                    id: title2
+                    id: description
                     Layout.maximumWidth: root.width / 100 * 30
                     Layout.maximumHeight: root.height / 100 * 70
                     elide: Text.ElideRight
                     wrapMode: Text.Wrap
                     text:
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                        "Sed a ligula dolor. Cras eu sapien felis. Praesent placerat " +
-                        "interdum mi at commodo. Nulla leo lacus, semper sed neque a, " +
-                        "viverra convallis enim. Maecenas eget ligula eu augue posuere " +
-                        "tincidunt sit amet et orci. In hac habitasse platea dictumst. " +
-                        "Donec rutrum pharetra scelerisque. Sed quam mi, accumsan eget " +
-                        "bibendum non, varius a nisi. Vivamus commodo turpis vitae " +
-                        "vulputate tempus. Pellentesque efficitur risus nibh, sit amet " +
-                        "interdum ante pulvinar sit amet. Ut hendrerit diam eu felis " +
-                        "ornare, a sollicitudin lacus auctor. In hac habitasse platea dictumst. " +
-                        "Vivamus sodales, purus at fermentum mattis, nulla libero porttitor " +
-                        "orci, vitae scelerisque quam elit sit amet eros."
+                        "..."
                     font.pixelSize: Math.max(13, root.height / 100 * 2.2)
                     color: "white"
                 }
