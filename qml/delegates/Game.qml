@@ -23,6 +23,8 @@ C.Button {
             gameInfoScene.icon = game.gameIcon;
             gameInfoScene.exec = game.gameExec;
             window.scene = SceneConstants.gameInfoScene;
+            if(core_app === undefined) return;
+            core_app.get_game_data(gameTitle);
         }
     }
 
