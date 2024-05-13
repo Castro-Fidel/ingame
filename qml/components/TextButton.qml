@@ -19,7 +19,7 @@ C.Button {
         font.family: globalFont.font
         font.weight: 400
         font.styleName: globalFont.font.styleName
-        font.pointSize: 14
+        font.pointSize: 16
         //font.bold : true
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

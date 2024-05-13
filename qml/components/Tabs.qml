@@ -13,7 +13,7 @@ Rectangle {
     property var activeButtonTab: buttonGames
 
     id: tabs
-    x: 100
+    x: 0
     y: 0
     anchors.fill: parent
 
@@ -42,138 +42,159 @@ Rectangle {
     ColumnLayout{
         id:topNavigation
         width: parent.width
-        RowLayout {
-            id: tabButtons
-            property int tempX: 100
-            property bool toggle: false
-
-
-            //anchors.leftMargin: parent.width / 10
-            //anchors.rightMargin: parent.width / 10
-            Component.onCompleted: {
-                tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
-                tabButtons.x = tabButtons.tempX;
-                console.log("tabButtons completed!");
-            }
-
+        Rectangle{
+            width: parent.width
+            height: buttonSystemManagement.height
+            color:"#00000000"
             Layout.bottomMargin: buttonSystemManagement.height / 2
             Layout.topMargin: buttonSystemManagement.height / 3
-            x:100
-            // Состояния
-            states: [
-                State {
-                    name: "ClickTabButton";
-                    when: tabButtons.toggle;
-                    PropertyChanges {
-                        target: tabButtons;
-                        x:tempX
+
+            Image {
+                id: iconLB
+                source: "../icons/XboxController/left-bumper.svg"
+                fillMode: Image.Tile
+                sourceSize.width: tabButtons.width / 100 * 15
+                //sourceSize.height:
+                //Layout.alignment: Qt.AlignLeft;
+                anchors.leftMargin: window.width / 100 * 6
+                anchors.left: parent.left
+                anchors.verticalCenter: tabButtons.verticalCenter
+                //Layout.leftMargin: Math.floor( parent.width / 100 * 6)
+            }
+
+            RowLayout {
+                id: tabButtons
+                property int tempX: 100
+                property bool toggle: false
+
+                Component.onCompleted: {
+                    tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
+                    tabButtons.x = tabButtons.tempX;
+                    console.log("tabButtons completed!");
+                }
+
+
+                x:0
+                // Состояния
+                states: [
+                    State {
+                        name: "ClickTabButton";
+                        when: tabButtons.toggle;
+                        PropertyChanges {
+                            target: tabButtons;
+                            x:tempX
+                        }
+                    },
+                    State {
+                        name: "";
+                        when: 1 == 1
                     }
-                },
-                State {
-                    name: "";
-                    when: 1 == 1
-                }
-            ]
-            // Анимации при изменениях состояний
-            transitions:
-                Transition {
-                    from: "";
-                    to: "ClickTabButton";
-                    PropertyAnimation {
-                        id: clickTabButtonAnimation
-                        // from: tempX
-                        duration: 200
-                        property: "x"
-                        // анимацию можно будет поменять в любое время
-                        easing.type: Easing.InOutCirc
+                ]
+                // Анимации при изменениях состояний
+                transitions:
+                    Transition {
+                        from: "";
+                        to: "ClickTabButton";
+                        PropertyAnimation {
+                            id: clickTabButtonAnimation
+                            // from: tempX
+                            duration: 200
+                            property: "x"
+                            // анимацию можно будет поменять в любое время
+                            easing.type: Easing.InOutCirc
+                        }
                     }
-                }
-            // Функция перемещения кнопок
-            // TODO: OPTIMIZE (REDUCE EXTRA FOR LOOP)
-            function changeButtonActiveTab(ButtonId){
-                let index = 0;
-                let left_distance = 0;
-                let i = 0;
+                // Функция перемещения кнопок
+                // TODO: OPTIMIZE (REDUCE EXTRA FOR LOOP)
+                function changeButtonActiveTab(ButtonId){
+                    let index = 0;
+                    let left_distance = 0;
+                    let i = 0;
 
-                for(i = 0; i < tabButtons.children.length; ++i) {
-                    if (children[i] === ButtonId) {
-                        index = i
-                        break
+                    for(i = 0; i < tabButtons.children.length; ++i) {
+                        if (children[i] === ButtonId) {
+                            index = i
+                            break
+                        }
                     }
+
+                    for(i = 0; i < index; ++i) {
+                        left_distance += spacing + children[i].width;
+                    }
+
+                    tempX = topNavigation.width / 2 - tabButtons.children[index].width / 2 - left_distance;
+                    tabs.activeButtonTab.isActive = false;
+                    tabs.activeButtonTab = ButtonId;
+                    tabs.activeButtonTab.isActive = true;
                 }
 
-                for(i = 0; i < index; ++i) {
-                    left_distance += spacing + children[i].width;
+                TopMenuBut.TextButton {
+                    id: buttonSystemManagement;
+                    text: TabConstants.systemManagementTab;
+                    width: 400;
+
+                    onClicked: function(){
+                        tabButtons.x = tabButtons.tempX
+                        tabButtons.changeButtonActiveTab(this)
+                        tabButtons.toggle = true
+                        tabs.currentTab = TabConstants.systemManagementTab;
+                        // tabs.changeTab();
+                        // console.log(tabs.urrentTab);
+                    }
+                    onReleased: tabButtons.toggle = false
+                }
+                TopMenuBut.TextButton {
+                    id: buttonGames
+                    text: TabConstants.gamesTab
+                    onClicked: function(){
+                        tabButtons.x = tabButtons.tempX
+                        tabButtons.changeButtonActiveTab(this)
+                        tabButtons.toggle = true
+                        tabs.currentTab = TabConstants.gamesTab;
+                        //if(core_app === undefined) return;
+                        //console.log("core_app found");
+
+                        //app.get_games();
+                        // tabs.changeTab();
+                        // ;console.log(tabs.currentTab);
+
+                        // ;console.log("1");
+                    }
+                    onReleased: tabButtons.toggle = false
+
                 }
 
-                tempX = topNavigation.width / 2 - tabButtons.children[index].width / 2 - left_distance;
-                tabs.activeButtonTab.isActive = false;
-                tabs.activeButtonTab = ButtonId;
-                tabs.activeButtonTab.isActive = true;
-            }
+                TopMenuBut.TextButton {
+                    id: testbut2
+                    text: "Test"
+                    //font.pixelSize: 60
+                    //height:Math.ceil(tabs.height/100 * 10)
 
-            TopMenuBut.TextButton {
-                id: buttonSystemManagement;
-                text: TabConstants.systemManagementTab;
-                width: 400;
+                    onClicked: function(){
+                        tabButtons.x = tabButtons.tempX
+                        tabButtons.changeButtonActiveTab(this)
+                        tabButtons.toggle = true
+                   }
+                    onReleased: tabButtons.toggle = false
 
-                onClicked: function(){
-                    tabButtons.x = tabButtons.tempX
-                    tabButtons.changeButtonActiveTab(this)
-                    tabButtons.toggle = true
-                    tabs.currentTab = TabConstants.systemManagementTab;
-                    // tabs.changeTab();
-                    // console.log(tabs.urrentTab);
                 }
-                onReleased: tabButtons.toggle = false
-            }
-            TopMenuBut.TextButton {
-                id: buttonGames
-                text: TabConstants.gamesTab
-                onClicked: function(){
-                    tabButtons.x = tabButtons.tempX
-                    tabButtons.changeButtonActiveTab(this)
-                    tabButtons.toggle = true
-                    tabs.currentTab = TabConstants.gamesTab;
-                    //if(core_app === undefined) return;
-                    //console.log("core_app found");
-
-                    //app.get_games();
-                    // tabs.changeTab();
-                    // ;console.log(tabs.currentTab);
-
-                    // ;console.log("1");
-                }
-                onReleased: tabButtons.toggle = false
 
             }
-            TopMenuBut.TextButton {
-                id: testbut1
-                text: "Mega"
-                onClicked: function(){
-                    tabButtons.x = tabButtons.tempX
-                    tabButtons.changeButtonActiveTab(this)
-                    tabButtons.toggle = true
-               }
-               onReleased: tabButtons.toggle = false
-
-            }
-            TopMenuBut.TextButton {
-                id: testbut2
-                text: "Test"
-                //font.pixelSize: 60
-                //height:Math.ceil(tabs.height/100 * 10)
-
-                onClicked: function(){
-                    tabButtons.x = tabButtons.tempX
-                    tabButtons.changeButtonActiveTab(this)
-                    tabButtons.toggle = true
-               }
-                onReleased: tabButtons.toggle = false
-
+            Image {
+                id: iconRB
+                source: "../icons/XboxController/right-bumper.svg"
+                fillMode: Image.Tile
+                //sourceSize.width: text.font.pixelSize * 2
+                //sourceSize.height: tabButtons.width / 10
+                sourceSize.width: tabButtons.width / 100 * 15
+                //Layout.alignment: Qt.AlignRight;
+                anchors.verticalCenter: tabButtons.verticalCenter
+                anchors.rightMargin: window.width / 100 * 6
+                anchors.right: parent.right
             }
 
         }
+
     }
     // Заглушка Системных настроек
     Grid {
@@ -253,6 +274,7 @@ Rectangle {
                 model: core_app.games
                 // Карточка игры
                 Game {
+                    id: game
                     gameTitle: model.name
                     gameExec: model.exec
                     gameIcon: model.icon
@@ -267,6 +289,40 @@ Rectangle {
                         gamesGrid.rowSpacing - gamesGrid.anchors.rightMargin - gamesGrid.anchors.leftMargin)
                         / gamesGrid.columns
                     Layout.preferredHeight: Layout.preferredWidth / 2 * 3
+
+
+
+
+                    // Component.onCompleted: {a3.start()}
+
+
+
+                    // SequentialAnimation  {
+                    //     id:a3
+
+                    //     NumberAnimation {
+                    //         property:Layout.topMargin;
+                    //         easing.type: Easing.InOutQuad;
+                    //         duration: 300;
+                    //         from: 100//Layout.preferredHeight;
+                    //         to: 0;
+                    //     }
+                    //     NumberAnimation {
+                    //         property:Layout.topMargin;
+                    //         easing.type: Easing.InOutQuad;
+                    //         duration: 300;
+                    //         from: 0//Layout.preferredHeight;
+                    //         to: 100;
+                    //     }
+                    //     loops: Animation.Infinite
+                    // }
+
+
+
+
+
+                    //Layout.topMargin: Layout.preferredHeight
+
                 }
             }
         }

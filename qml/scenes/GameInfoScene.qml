@@ -31,9 +31,6 @@ Rectangle {
          gameRect.anchors.left = startPos.left
          gameRect.anchors.top = startPos.top
          runGameButton.focus = true
-         // gameRect.width = startPos.Layout.preferredWidth
-         // gameRect.Height = startPos.Layout.preferredHeight
-
          root.state = "completed"
     }
      states:[
@@ -67,7 +64,6 @@ Rectangle {
      ]
 
          transitions: Transition {
-             // smoothly reanchor myRect and move into new position
              AnchorAnimation { duration: 300 }
          }
 
@@ -190,8 +186,8 @@ Rectangle {
                 anchors.top: gameRect.parent.top
                 anchors.leftMargin: root.width / 100 * 3
                 anchors.topMargin: root.width / 100 * 3
-                width:root.width / 100 * 20
-                height: width / 2 * 3
+                width: height /3 * 2 //root.width / 100 * 20
+                height: root.height / 2   //width / 2 * 3
                 color:"#00000000"
             }
 
@@ -226,13 +222,9 @@ Rectangle {
             RowLayout{
                 id:info
                 width: parent.width - finishPos.width - root.width / 100 * 6
-                //height: content.height - topPanel.height
                 anchors.left: finishPos.right
                 anchors.top: finishPos.top
-
                 anchors.leftMargin: root.width / 100 * 3
-
-
                 ColumnLayout{
                     Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                     Layout.fillWidth: true
@@ -240,45 +232,119 @@ Rectangle {
                     spacing: 40
                     Text {
                         id: title
-                        //width: root.width / 100 * 10
                         Layout.maximumWidth: root.width / 100 * 30
                         font.weight: 600
                         wrapMode: Text.Wrap
                         text: root.title
-                        //font.pixelSize: 32
                         font.pixelSize:Math.max(19,root.height / 100 * 4.2)
                         color: "white"
                     }
 
+
+
+
+
+
+
+
+
+
                     Button {
                         id: runGameButton
-
-                        text: "Run game"
                         focus: true
+
+                        //background.opacity: 0.2
+                        leftPadding: textGame.font.pixelSize * 3
+                        rightPadding: leftPadding
+                        topPadding: leftPadding/ 8
+                        bottomPadding: leftPadding/8
+
+                        //opacity: 0.8
+                        text:"Play"
+                        width: textGame.contentWidth + 5
+                        hoverEnabled: true
+                        contentItem: Text {
+                            id: textGame
+                            text: runGameButton.text
+                            font.pixelSize:Math.max(19,root.height / 100 * 3)
+
+                            font.family: globalFont.font
+                            font.weight: 800
+                            font.styleName: globalFont.font.styleName
+                            color: 'white'
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                        padding:10
+
+                        background: Rectangle {
+                            id:runGameBg
+
+                            color: "white" //control.down ? "#aaaaaa" : (control.activeFocus ? "#aaaaaa" : "#000000")
+
+                            opacity: 0.1
+                            radius: runGameButton.width * 0.3
+
+                        }
+
                         onClicked: function(){
                             if(window.scene !== S.gameInfoScene) return;
                             if(core_app === undefined) return;
                             core_app.start_game(root.exec);
                         }
+                        // Состояния
+                        states: [
+                            // Карточка в фокуске
+                            State {
+                                name: "focus"; when: runGameButton.activeFocus
+                                PropertyChanges {
+                                    target: runGameBg;
+                                    opacity: 1;
+                                }
+                                PropertyChanges {
+                                    target: textGame;
+                                    font.weight: 800;
+                                    color:"black"
+                                }
+                            },
+                            // На карточку навели курсор мыши
+                            State {
+                                name: "hover"; when: runGameButton.hovered
+                                PropertyChanges {
+                                    target: runGameBg;
+                                    opacity: 1;
+                                }
+                                PropertyChanges {
+                                    target: textGame;
+                                    color:"black"
+                                }
+                            }
+                        ]
+                        // Анимации при изменениях состояний
+                        transitions: Transition  {
+                            reversible: true
+                            NumberAnimation {
+                                property: "opacity";
+                                duration: 300
+                            }
+
+
+                        }
                     }
                 }
+
+
+
+
+
+
                 Text {
-                    //anchors.top: info.top
-                    // anchors.right: info.right
                     horizontalAlignment: Text.AlignJustif
                     Layout.alignment:Qt.AlignRight| Qt.AlignTop
-                    //Layout.preferredWidth:
-
-
-
-
                     id: title2
-                    //width: root.width / 100 * 10
                     Layout.maximumWidth: root.width / 100 * 30
                     Layout.maximumHeight: root.height / 100 * 70
                     elide: Text.ElideRight
-
-
                     wrapMode: Text.Wrap
                     text: "SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfvSD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfvSD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv "
                     font.pixelSize:Math.max(13,root.height / 100 * 2.2)
@@ -287,13 +353,7 @@ Rectangle {
 
             }
 
-
-
-
-
-
         }
-
 
     }
 
