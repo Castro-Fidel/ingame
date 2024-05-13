@@ -21,13 +21,13 @@ Rectangle {
     onVisibleChanged: {
         tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
         tabButtons.x = tabButtons.tempX;
-        console.log("tabButtons.x = " + tabButtons.x);
+        // console.log("tabButtons.x = " + tabButtons.x);
     }
 
     Component.onCompleted: {
         tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
         tabButtons.x = tabButtons.tempX;
-        console.log("Tabs completed!");
+        // console.log("Tabs completed!");
     }
     onWidthChanged: function(){
         tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
@@ -39,13 +39,14 @@ Rectangle {
     }
 
     // Кнопки навигации
-    ColumnLayout{
-        id:topNavigation
+    ColumnLayout {
+        id: topNavigation
         width: parent.width
-        Rectangle{
+
+        Rectangle {
             width: parent.width
             height: buttonSystemManagement.height
-            color:"#00000000"
+            color: "#00000000"
             Layout.bottomMargin: buttonSystemManagement.height / 2
             Layout.topMargin: buttonSystemManagement.height / 3
 
@@ -70,11 +71,11 @@ Rectangle {
                 Component.onCompleted: {
                     tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
                     tabButtons.x = tabButtons.tempX;
-                    console.log("tabButtons completed!");
+                    // console.log("tabButtons completed!");
                 }
 
+                x: 0
 
-                x:0
                 // Состояния
                 states: [
                     State {
@@ -82,7 +83,7 @@ Rectangle {
                         when: tabButtons.toggle;
                         PropertyChanges {
                             target: tabButtons;
-                            x:tempX
+                            x: tempX
                         }
                     },
                     State {
@@ -104,6 +105,7 @@ Rectangle {
                             easing.type: Easing.InOutCirc
                         }
                     }
+
                 // Функция перемещения кнопок
                 // TODO: OPTIMIZE (REDUCE EXTRA FOR LOOP)
                 function changeButtonActiveTab(ButtonId){
@@ -213,11 +215,31 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.bottomMargin: 90
 
-        Rectangle { color: "red"; width: 50; height: 50 }
-        Rectangle { color: "green"; width: 20; height: 50 }
-        Rectangle { color: "blue"; width: 50; height: 20 }
-        Rectangle { color: "cyan"; width: 50; height: 50 }
-        Rectangle { color: "magenta"; width: 10; height: 10 }
+        Rectangle {
+            color: "red";
+            width: 50;
+            height: 50;
+        }
+        Rectangle {
+            color: "green";
+            width: 20;
+            height: 50;
+        }
+        Rectangle {
+            color: "blue";
+            width: 50;
+            height: 20;
+        }
+        Rectangle {
+            color: "cyan";
+            width: 50;
+            height: 50;
+        }
+        Rectangle {
+            color: "magenta";
+            width: 10;
+            height: 10;
+        }
     }
 
     // Сетка игр
@@ -229,8 +251,8 @@ Rectangle {
         ScrollBar.vertical: ScrollBar {
             id: scrolV;
             height: parent.height
-            opacity:0
-            position:0
+            opacity: 0
+            position: 0
 
             property double fromAnim: 0.0
             property double toAnim: 0.0
@@ -238,8 +260,8 @@ Rectangle {
 
         function scrollToY(y,HItem) {
             scrolV.fromAnim = scrolV.position
-            scrolV.position = (1.0 - scrolV.size) * y/gamesScroller.height
-            scrolV.toAnim = (1.0 - scrolV.size) * y/gamesScroller.height
+            scrolV.position = (1.0 - scrolV.size) * y / gamesScroller.height
+            scrolV.toAnim = (1.0 - scrolV.size) * y / gamesScroller.height
             if(scrolV.toAnim != scrolV.fromAnim)
                 scrollAnimation.start()
         }
@@ -290,12 +312,7 @@ Rectangle {
                         / gamesGrid.columns
                     Layout.preferredHeight: Layout.preferredWidth / 2 * 3
 
-
-
-
                     // Component.onCompleted: {a3.start()}
-
-
 
                     // SequentialAnimation  {
                     //     id:a3
@@ -317,11 +334,7 @@ Rectangle {
                     //     loops: Animation.Infinite
                     // }
 
-
-
-
-
-                    //Layout.topMargin: Layout.preferredHeight
+                    // Layout.topMargin: Layout.preferredHeight
 
                 }
             }
@@ -340,7 +353,7 @@ Rectangle {
         return [
             buttonSystemManagement,
             buttonGames,
-            testbut1,
+            // testbut1,
             testbut2
         ];
     }
@@ -380,29 +393,27 @@ Rectangle {
         // c[tabs.focusedItems].clicked();
     }
 
-    Connections {
-        target: core_app
-        function onGamepadClickedLB(done){
-            if(window.scene !== S.homeScene) return;
-            tabs.applyTabsFocus(-1)
-        }
-        function onGamepadClickedRB(done){
-            if(window.scene !== S.homeScene) return;
-            tabs.applyTabsFocus(1)
-        }
-        function onGamepadAxisLeft(done){
-            if(window.scene !== S.homeScene) return;
-            tabs.applyItemsFocus(-1)
-        }
-        function onGamepadAxisRight(done){
-            if(window.scene !== S.homeScene) return;
-            tabs.applyItemsFocus(1)
-        }
-        function onGamepadClickedApply(done){
-            if(window.scene !== S.homeScene) return;
-            let c = gamesGrid.children;
-            c[tabs.focusedItems].press();
-        }
+    function onGamepadClickedLB(done){
+        if(window.scene !== S.homeScene) return;
+        tabs.applyTabsFocus(-1)
+    }
+    function onGamepadClickedRB(done){
+        if(window.scene !== S.homeScene) return;
+        tabs.applyTabsFocus(1)
+    }
+    function onGamepadAxisLeft(done){
+        if(window.scene !== S.homeScene) return;
+        tabs.applyItemsFocus(-1)
+    }
+    function onGamepadAxisRight(done){
+        if(window.scene !== S.homeScene) return;
+        tabs.applyItemsFocus(1)
+    }
+    function onGamepadClickedApply(done){
+        if(window.scene !== S.homeScene) return;
+        // console.log("onGamepadClickedApply");
+        let c = gamesGrid.children;
+        c[tabs.focusedItems].press();
     }
 
 }

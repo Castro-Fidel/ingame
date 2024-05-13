@@ -19,23 +19,28 @@ C.Button {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: "AllButtons"
-        onClicked: function(){
-            if(!game.visible) return;
+        onClicked: function() {
             game.press();
         }
     }
 
     function press(){
-        if(!visible) return;
+        if(!game.visible) return;
+        if(window.scene !== SceneConstants.homeScene) return;
+
+        // console.log("GAME CLICKED " + game.gameTitle);
+
         gameInfoScene.title = game.gameTitle;
         gameInfoScene.icon = game.gameIcon;
         gameInfoScene.exec = game.gameExec;
-        var globalCoordinates = mapToItem(null,0,0)
-        console.log("game coord - X: " + globalCoordinates.x + " y: " + globalCoordinates.y)
+
+        let globalCoordinates = mapToItem(null, 0, 0)
+        // console.log("game coord - X: " + globalCoordinates.x + " y: " + globalCoordinates.y)
+
         gameInfoScene.startX = globalCoordinates.x
         gameInfoScene.startY = globalCoordinates.y
-        gameInfoScene.imgWight = game.width*1.05
-        gameInfoScene.imgHight = game.height*1.05
+        gameInfoScene.imgWight = game.width * 1.05
+        gameInfoScene.imgHight = game.height * 1.05
 
         window.scene = SceneConstants.gameInfoScene;
         gameInfoScene.startAnimation()
@@ -46,8 +51,8 @@ C.Button {
     //
     background: Rectangle {
         id: rect
-        width:game.width + border.width *2
-        height:game.height + border.width*2
+        width: game.width + border.width * 2
+        height: game.height + border.width * 2
 
         opacity: 1.0
         color: "#000000"
@@ -61,16 +66,33 @@ C.Button {
     states: [
         // Карточка в фокуске
         State {
-            name: "focus"; when: game.activeFocus
-            PropertyChanges { target: rect; border.width: Math.max(game.width / 100 * 2 ,2);}
-            PropertyChanges { target: game; scale:1.05 }
-            PropertyChanges { target: bgNameGrad; opacity:1 }
+            name: "focus";
+            when: game.activeFocus
+            PropertyChanges {
+                target: rect;
+                border.width: Math.max(game.width / 100 * 2, 2);
+            }
+            PropertyChanges {
+                target: game;
+                scale: 1.05;
+            }
+            PropertyChanges {
+                target: bgNameGrad;
+                opacity: 1;
+            }
         },
         // На карточку навели курсор мыши
         State {
-            name: "hover"; when: hoverArea.containsMouse
-            PropertyChanges { target: game; scale:1.05 }
-            PropertyChanges { target: bgNameGrad; opacity:1 }
+            name: "hover";
+            when: hoverArea.containsMouse
+            PropertyChanges {
+                target: game;
+                scale: 1.05;
+            }
+            PropertyChanges {
+                target: bgNameGrad;
+                opacity: 1;
+            }
 
         }
     ]
@@ -81,12 +103,12 @@ C.Button {
             from: "";
             to: "focus";
             reversible: false;
-            SequentialAnimation  {
-                NumberAnimation{
+            SequentialAnimation {
+                NumberAnimation {
                     target: rect;
                     property: "border.width"
                     duration: 100
-                    to: Math.max(game.width / 100 * 4,4)        // пока x не будет равно 250
+                    to: Math.max(game.width / 100 * 4, 4)        // пока x не будет равно 250
                     easing.type: Easing.InOutQuad
                 }
                 NumberAnimation {
@@ -183,7 +205,7 @@ C.Button {
     Rectangle {
           id: rectangleMask
           anchors.fill: parent
-          radius: 1.5*height
+          radius: 1.5 * height
           visible: false
       }
 }

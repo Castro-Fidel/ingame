@@ -8,42 +8,60 @@ import "constants/scene.js" as SceneConstants
 Window {
     property string scene: SceneConstants.homeScene
 
-    Loader{
-         id : ld
-         anchors.fill: parent;
+    Loader {
+        id: ld
+        anchors.fill: parent;
     }
-    FontLoader { id: globalFont; source: "./fonts/OpenSans-VariableFont_wdth.ttf" }
+    FontLoader {
+        id: globalFont;
+        source: "./fonts/OpenSans-VariableFont_wdth.ttf"
+    }
 
 
     Connections {
         target: core_app
         function onGameStarted(done) {
-            console.log("core_app: gameStarted");
+            // console.log("core_app: gameStarted");
             window.scene = SceneConstants.runningScene;
         }
         function onGameEnded(done) {
-            console.log("core_app: gameEnded");
+            // console.log("core_app: gameEnded");
             window.scene = SceneConstants.gameInfoScene;
         }
         function onGamepadClickedLB(done){
-            // console.log("core_app: onGamepadClickedLB");
+            window._trigger("onGamepadClickedLB", done);
         }
         function onGamepadClickedRB(done){
-            // console.log("core_app: onGamepadClickedRB");
+            window._trigger("onGamepadClickedRB", done);
         }
         function onGamepadAxisLeft(done){
-            // console.log("core_app: onGamepadAxisLeft");
+            window._trigger("onGamepadAxisLeft", done);
         }
         function onGamepadAxisRight(done){
-            // console.log("core_app: onGamepadAxisRight");
+            window._trigger("onGamepadAxisRight", done);
         }
         function onGamepadClickedApply(done){
-            // console.log("core_app: onGamepadClickedApply");
+            window._trigger("onGamepadClickedApply", done);
+        }
+        function onGamepadClickedBack(done){
+            window._trigger("onGamepadClickedBack", done);
         }
     }
 
+    function _trigger(_method, ...args){
+        let scenes = {};
+        scenes[SceneConstants.homeScene] = homeScene;
+        scenes[SceneConstants.gameInfoScene] = gameInfoScene;
+        scenes[SceneConstants.runningScene] = runningScene;
+
+        let d = scenes[scene];
+
+        if(d !== null && d[_method] !== undefined && d[_method] !== null)
+            d[_method](args);
+    }
+
     Component.onDestruction: {
-        console.log("Desctructing window");
+        // console.log("Desctructing window");
     }
 
     id: window

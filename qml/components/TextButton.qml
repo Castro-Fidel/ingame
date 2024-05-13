@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Controls as C
 
-
-
 C.Button {
     id: root
     property bool isActive: false
@@ -28,9 +26,11 @@ C.Button {
         color: 'white'
         opacity: 0.8
     }
+
     background.opacity: 0.0
     background.anchors.margins: 0
-    Rectangle{
+
+    Rectangle {
         id: line
         color: 'white'
         height: 2
@@ -38,14 +38,14 @@ C.Button {
         anchors.horizontalCenter: root.horizontalCenter
         anchors.top: root.top
         // anchors.bottom:root.bottom
-
     }
 
     // Состояния
     states: [
         // Карточка в фокуске
         State {
-            name: "active"; when: isActive
+            name: "active";
+            when: isActive
             PropertyChanges {
                 target: line;
                 width: parent.width;
@@ -61,7 +61,8 @@ C.Button {
         },
         // На карточку навели курсор мыши
         State {
-            name: "hover"; when: hovered && !isActive
+            name: "hover";
+            when: hovered && !isActive
             //PropertyChanges { target: line; width: parent.width;}
             PropertyChanges {
                 target: text;
@@ -78,7 +79,8 @@ C.Button {
             id:activeAnim
             ParallelAnimation {
                 NumberAnimation {
-                    target: line; property: "width"
+                    target: line;
+                    property: "width"
                     duration: 200
                     easing.type: Easing.InOutQuad
                 }
@@ -91,11 +93,13 @@ C.Button {
         },
 
         Transition {
-            from: ""; to: "hover"
+            from: "";
+            to: "hover"
             reversible: true
-            ParallelAnimation  {
-                NumberAnimation{
-                    target: line; property: "width"
+            ParallelAnimation {
+                NumberAnimation {
+                    target: line;
+                    property: "width"
                     duration: 200
                     easing.type: Easing.InOutQuad
                 }

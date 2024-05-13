@@ -83,7 +83,7 @@ class App(QtCore.QObject):
                 # TODO parse product name
 
                 _icon = (os.path.isfile(_icon) and _icon
-                        or os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/PUBG.png"))
+                         or os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/PUBG.png"))
 
                 # Автозапуск игры:
                 # PW_GUI_DISABLED_CS=1
@@ -118,6 +118,7 @@ class App(QtCore.QObject):
     @Slot(str)
     def start_game(self, exec):
         self.game_started.emit(True)
+
         def run_in_thread(t, _exec):
             t.running_game_process = subprocess.Popen(
                 _exec,

@@ -25,15 +25,15 @@ Rectangle {
     property double imgHight: 0
 
     function startAnimation(){
-
-         startPos.x = startX
-         startPos.y = startY
-         gameRect.anchors.left = startPos.left
-         gameRect.anchors.top = startPos.top
-         runGameButton.focus = true
-         root.state = "completed"
+        startPos.x = startX
+        startPos.y = startY
+        gameRect.anchors.left = startPos.left
+        gameRect.anchors.top = startPos.top
+        runGameButton.focus = true
+        root.state = "completed"
     }
-     states:[
+
+    states: [
         State {
             name: "finish"
             AnchorChanges {
@@ -46,7 +46,6 @@ Rectangle {
                 width: imgWight
                 height: imgHight
             }
-
         },
         State {
             name: "completed"
@@ -60,14 +59,14 @@ Rectangle {
                 width: finishPos.width
                 height: finishPos.height
             }
-         }
-     ]
+        }
+    ]
 
-         transitions: Transition {
-             AnchorAnimation { duration: 300 }
-         }
-
-
+    transitions: Transition {
+        AnchorAnimation {
+            duration: 300
+        }
+    }
 
     onVisibleChanged: function(){
         // if(visible){
@@ -86,10 +85,8 @@ Rectangle {
         // anchors.fill:parent
         anchors.left: parent.left
         anchors.top: parent.top
-        anchors.fill:parent
+        anchors.fill: parent
         id: content
-
-
 
         anchors.leftMargin: parent.width / 100 * 3
         anchors.rightMargin: parent.width / 100 * 3
@@ -98,18 +95,17 @@ Rectangle {
         spacing: 6
         ItemGroup{
             id: topPanel
-
             Button {
                 id: back
                 background.opacity: 0.0
                 opacity: 0.8
-                text:"Back"
+                text: "Back"
                 width: text.contentWidth + backImg.width + 5
                 hoverEnabled: true
                 contentItem: Text {
                     id: text
                     text: back.text
-                    font.pixelSize:Math.max(19,root.height / 100 * 3.2)
+                    font.pixelSize: Math.max(19, root.height / 100 * 3.2)
 
                     font.family: globalFont.font
                     font.weight: 500
@@ -135,7 +131,8 @@ Rectangle {
                 states: [
                     // Карточка в фокуске
                     State {
-                        name: "focus"; when: back.activeFocus
+                        name: "focus";
+                        when: back.activeFocus
                         PropertyChanges {
                             target: back;
                             opacity: 1;
@@ -147,7 +144,8 @@ Rectangle {
                     },
                     // На карточку навели курсор мыши
                     State {
-                        name: "hover"; when: back.hovered
+                        name: "hover";
+                        when: back.hovered
                         PropertyChanges {
                             target: back;
                             opacity: 1;
@@ -159,7 +157,7 @@ Rectangle {
                     //to: "focus"
                     reversible: true
                     NumberAnimation {
-                        //target: back;
+                        // target: back;
                         property: "opacity";
                         duration: 100
                     }
@@ -186,16 +184,16 @@ Rectangle {
                 anchors.top: gameRect.parent.top
                 anchors.leftMargin: root.width / 100 * 3
                 anchors.topMargin: root.width / 100 * 3
-                width: height /3 * 2 //root.width / 100 * 20
+                width: height / 3 * 2 //root.width / 100 * 20
                 height: root.height / 2   //width / 2 * 3
-                color:"#00000000"
+                color: "#00000000"
             }
 
-            Rectangle{
-                id:gameRect
+            Rectangle {
+                id: gameRect
                 width: imgWight
                 height: imgHight
-                color:"#000000"
+                color: "#000000"
                 Image {
                     id: gameImage
                     anchors.fill: parent
@@ -219,35 +217,27 @@ Rectangle {
                 }
             }
 
-            RowLayout{
-                id:info
+            RowLayout {
+                id: info
                 width: parent.width - finishPos.width - root.width / 100 * 6
                 anchors.left: finishPos.right
                 anchors.top: finishPos.top
                 anchors.leftMargin: root.width / 100 * 3
-                ColumnLayout{
+                ColumnLayout {
                     Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     spacing: 40
+
                     Text {
                         id: title
                         Layout.maximumWidth: root.width / 100 * 30
                         font.weight: 600
                         wrapMode: Text.Wrap
                         text: root.title
-                        font.pixelSize:Math.max(19,root.height / 100 * 4.2)
+                        font.pixelSize: Math.max(19, root.height / 100 * 4.2)
                         color: "white"
                     }
-
-
-
-
-
-
-
-
-
 
                     Button {
                         id: runGameButton
@@ -256,17 +246,17 @@ Rectangle {
                         //background.opacity: 0.2
                         leftPadding: textGame.font.pixelSize * 3
                         rightPadding: leftPadding
-                        topPadding: leftPadding/ 8
-                        bottomPadding: leftPadding/8
+                        topPadding: leftPadding / 8
+                        bottomPadding: leftPadding / 8
 
                         //opacity: 0.8
-                        text:"Play"
+                        text: "Play"
                         width: textGame.contentWidth + 5
                         hoverEnabled: true
                         contentItem: Text {
                             id: textGame
                             text: runGameButton.text
-                            font.pixelSize:Math.max(19,root.height / 100 * 3)
+                            font.pixelSize: Math.max(19, root.height / 100 * 3)
 
                             font.family: globalFont.font
                             font.weight: 800
@@ -275,16 +265,13 @@ Rectangle {
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignHCenter
                         }
-                        padding:10
+                        padding: 10
 
                         background: Rectangle {
-                            id:runGameBg
-
+                            id: runGameBg
                             color: "white" //control.down ? "#aaaaaa" : (control.activeFocus ? "#aaaaaa" : "#000000")
-
                             opacity: 0.1
                             radius: runGameButton.width * 0.3
-
                         }
 
                         onClicked: function(){
@@ -296,7 +283,8 @@ Rectangle {
                         states: [
                             // Карточка в фокуске
                             State {
-                                name: "focus"; when: runGameButton.activeFocus
+                                name: "focus";
+                                when: runGameButton.activeFocus
                                 PropertyChanges {
                                     target: runGameBg;
                                     opacity: 1;
@@ -304,19 +292,20 @@ Rectangle {
                                 PropertyChanges {
                                     target: textGame;
                                     font.weight: 800;
-                                    color:"black"
+                                    color: "black"
                                 }
                             },
                             // На карточку навели курсор мыши
                             State {
-                                name: "hover"; when: runGameButton.hovered
+                                name: "hover";
+                                when: runGameButton.hovered
                                 PropertyChanges {
                                     target: runGameBg;
                                     opacity: 1;
                                 }
                                 PropertyChanges {
                                     target: textGame;
-                                    color:"black"
+                                    color: "black"
                                 }
                             }
                         ]
@@ -327,27 +316,32 @@ Rectangle {
                                 property: "opacity";
                                 duration: 300
                             }
-
-
                         }
                     }
                 }
 
-
-
-
-
-
                 Text {
                     horizontalAlignment: Text.AlignJustif
-                    Layout.alignment:Qt.AlignRight| Qt.AlignTop
+                    Layout.alignment: Qt.AlignRight | Qt.AlignTop
                     id: title2
                     Layout.maximumWidth: root.width / 100 * 30
                     Layout.maximumHeight: root.height / 100 * 70
                     elide: Text.ElideRight
                     wrapMode: Text.Wrap
-                    text: "SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfvSD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfvSD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv SD ferwf f wqefewf wekj fn wfaksljf dskvjblds vdfkjvb dvlkdfsj vd vjdfk vkldfjv dfkl vd vfkjlbdf kdfljb fkdjn kdjf vd kdfjv  vdfkvjdv dfvjkf vdfv "
-                    font.pixelSize:Math.max(13,root.height / 100 * 2.2)
+                    text:
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                        "Sed a ligula dolor. Cras eu sapien felis. Praesent placerat " +
+                        "interdum mi at commodo. Nulla leo lacus, semper sed neque a, " +
+                        "viverra convallis enim. Maecenas eget ligula eu augue posuere " +
+                        "tincidunt sit amet et orci. In hac habitasse platea dictumst. " +
+                        "Donec rutrum pharetra scelerisque. Sed quam mi, accumsan eget " +
+                        "bibendum non, varius a nisi. Vivamus commodo turpis vitae " +
+                        "vulputate tempus. Pellentesque efficitur risus nibh, sit amet " +
+                        "interdum ante pulvinar sit amet. Ut hendrerit diam eu felis " +
+                        "ornare, a sollicitudin lacus auctor. In hac habitasse platea dictumst. " +
+                        "Vivamus sodales, purus at fermentum mattis, nulla libero porttitor " +
+                        "orci, vitae scelerisque quam elit sit amet eros."
+                    font.pixelSize: Math.max(13, root.height / 100 * 2.2)
                     color: "white"
                 }
 
@@ -356,22 +350,6 @@ Rectangle {
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // LOGIC
 
@@ -405,25 +383,23 @@ Rectangle {
         c[i].forceActiveFocus();
     }
 
-    Connections {
-        target: core_app
-        function onGamepadAxisLeft(done){
-            if(window.scene !== S.gameInfoScene) return;
-            root.applyItemsFocus(-1)
-        }
-        function onGamepadAxisRight(done){
-            if(window.scene !== S.gameInfoScene) return;
-            root.applyItemsFocus(1)
-        }
-        function onGamepadClickedApply(done){
-            if(window.scene !== S.gameInfoScene) return;
-            let c = focusElements();
-            c[root.focusedItems].clicked();
-        }
-        function onGamepadClickedBack(done){
-            if(window.scene !== S.gameInfoScene) return;
-            back.clicked();
-        }
+
+    function onGamepadAxisLeft(done){
+        if(window.scene !== S.gameInfoScene) return;
+        root.applyItemsFocus(-1)
+    }
+    function onGamepadAxisRight(done){
+        if(window.scene !== S.gameInfoScene) return;
+        root.applyItemsFocus(1)
+    }
+    function onGamepadClickedApply(done){
+        if(window.scene !== S.gameInfoScene) return;
+        let c = focusElements();
+        c[root.focusedItems].clicked();
+    }
+    function onGamepadClickedBack(done){
+        if(window.scene !== S.gameInfoScene) return;
+        back.clicked();
     }
 
 

@@ -41,4 +41,21 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.rightMargin: 0
     }
+
+    function onGamepadClickedLB(done){
+        tabs.onGamepadClickedLB(done)
+    }
+    function onGamepadClickedRB(done){
+        tabs.onGamepadClickedRB(done)
+    }
+    function onGamepadAxisLeft(done){
+        tabs.onGamepadAxisLeft(done)
+    }
+    function onGamepadAxisRight(done){
+        tabs.onGamepadAxisRight(done)
+    }
+    function onGamepadClickedApply(done){
+        tabs.onGamepadClickedApply(done)
+    }
+
 }
