@@ -27,6 +27,8 @@ class App(QtCore.QObject):
     game_started = Signal(bool, name="gameStarted")
     game_ended = Signal(bool, name="gameEnded")
 
+    data_found = Signal(dict, name="gotGameData")
+
     gamepad_clicked_LB = Signal(bool, name="gamepadClickedLB")
     gamepad_clicked_RB = Signal(bool, name="gamepadClickedRB")
     gamepad_clicked_apply = Signal(bool, name="gamepadClickedApply")
@@ -121,10 +123,20 @@ class App(QtCore.QObject):
 
     @Slot(str, result=dict)
     def get_game_data(self, game_name):
-        print(game_name)
-        # self.agent.search_game("Risk of rain 2") # оригинальной osu в стиме нет =) Плейсхолдер
-        return self.agent.search_game(game_name)
-        # self.agent.search_game("asdjfiawefhawijefh")
+
+        #print(game_name)
+        def search_thread(t, name):
+
+            search_result = t.agent.search_game(name)
+            t.data_found.emit(search_result)
+
+            return
+
+        thread = threading.Thread(target=search_thread, args=(self, game_name))
+        thread.start()
+
+        pass
+
 
     @Slot(str)
     def start_game(self, exec):
