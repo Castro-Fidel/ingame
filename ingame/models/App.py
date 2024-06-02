@@ -31,6 +31,8 @@ class App(QtCore.QObject):
     gamepad_clicked_RB = Signal(bool, name="gamepadClickedRB")
     gamepad_clicked_apply = Signal(bool, name="gamepadClickedApply")
     gamepad_clicked_back = Signal(bool, name="gamepadClickedBack")
+    gamepad_axis_up = Signal(bool, name="gamepadAxisUp")
+    gamepad_axis_down = Signal(bool, name="gamepadAxisDown")
     gamepad_axis_left = Signal(bool, name="gamepadAxisLeft")
     gamepad_axis_right = Signal(bool, name="gamepadAxisRight")
 
@@ -48,6 +50,8 @@ class App(QtCore.QObject):
         self.gamepad.apply_clicked = lambda: self.gamepad_clicked_apply.emit(True)
         self.gamepad.l_clicked = lambda: self.gamepad_axis_left.emit(True)
         self.gamepad.r_clicked = lambda: self.gamepad_axis_right.emit(True)
+        self.gamepad.u_clicked = lambda: self.gamepad_axis_up.emit(True)
+        self.gamepad.d_clicked = lambda: self.gamepad_axis_down.emit(True)
         self.gamepad.back_clicked = lambda: self.gamepad_clicked_back.emit(True)
 
         self.agent = GameAgent()

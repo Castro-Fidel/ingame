@@ -54,6 +54,14 @@ Rectangle {
     function onGamepadAxisRight(done){
         tabs.onGamepadAxisRight(done)
     }
+
+    function onGamepadAxisUp(done){
+        tabs.onGamepadAxisUp(done)
+    }
+    function onGamepadAxisDown(done){
+        tabs.onGamepadAxisDown(done)
+    }
+
     function onGamepadClickedApply(done){
         tabs.onGamepadClickedApply(done)
     }

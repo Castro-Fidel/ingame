@@ -380,14 +380,17 @@ Rectangle {
         if(window.scene !== S.homeScene) return;
 
         let c = gamesGrid.children;
+        let l = c.length - 1; // exclude QQuickRepeater
 
-        tabs.focusedItems += inc;
-        if(tabs.focusedItems >= c.length)
-            tabs.focusedItems = 0;
+        console.log(tabs.focusedItems);
 
-        if(tabs.focusedItems < 0)
-            tabs.focusedItems = c.length - 1;
-
+        if(tabs.focusedItems + inc >= l) {
+            tabs.focusedItems = (c.focusedItems + inc === l - 1) ? 0 : l - 1;
+        } else if(tabs.focusedItems + inc < 0) {
+            tabs.focusedItems = (c.focusedItems + inc === 0) ? l - 1 : 0; //;
+        } else {
+            tabs.focusedItems += inc;
+        }
         c[tabs.focusedItems].forceActiveFocus();
         // gamesScroller.contentY = c[tabs.focusedItems].y; // not working
         // c[tabs.focusedItems].clicked();
@@ -400,6 +403,14 @@ Rectangle {
     function onGamepadClickedRB(done){
         if(window.scene !== S.homeScene) return;
         tabs.applyTabsFocus(1)
+    }
+    function onGamepadAxisUp(done){
+        if(window.scene !== S.homeScene) return;
+        tabs.applyItemsFocus(-gamesGrid.columns)
+    }
+    function onGamepadAxisDown(done){
+        if(window.scene !== S.homeScene) return;
+        tabs.applyItemsFocus(gamesGrid.columns)
     }
     function onGamepadAxisLeft(done){
         if(window.scene !== S.homeScene) return;
