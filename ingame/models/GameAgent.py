@@ -2,12 +2,11 @@ import os
 import pickle
 from steam_web_api import Steam
 
-
 # TODO:
-#  - Определиться, используется ли Lutris. Если да, вместо этого будет обращение к нему. Если нет,
+#  [?] Определиться, используется ли Lutris. Если да, вместо этого будет обращение к нему. Если нет,
 #    продумать "рыбу" более логично.
-#  - Починить отображение системных требований (точнее, разобраться, что именно возвращает API.
-#  - Додумать форматированные данные, что именно мы видим на странице игры?
+#  [?] Починить отображение системных требований (точнее, разобраться, что именно возвращает API.
+#  [done 1/2] Додумать форматированные данные, что именно мы видим на странице игры?
 
 
 class GameAgent:
@@ -22,6 +21,8 @@ class GameAgent:
         self.steam_process = Steam(agent_key)
         self.get_all_data()
 
+
+
     def add_game_info(self, data, name):
         if not data['apps']:
             self.all_data[name] = 0
@@ -34,7 +35,9 @@ class GameAgent:
         self.get_all_data()
 
     def search_game(self, game_name):
+
         self.get_all_data()
+
         if game_name in self.all_data:
             print("ITS HERE!")
         else:
@@ -59,8 +62,13 @@ class GameAgent:
             # for key, value in formatted_data.items():
             #     print("{0}: {1}".format(key, value))
         else:
-            print("Игра не распознана!")
+            #TODO исправить это недоразумение, временная затычка
+            formatted_data['title'] = "Информация не найдена!"
+            formatted_data['desc'] = "Информация не найдена!"
+            formatted_data['languages'] = "Информация не найдена!"
+            formatted_data['reqs'] = "Информация не найдена!"
 
+        # print(formatted_data)
         return formatted_data
 
     def clean_data(self):

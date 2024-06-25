@@ -40,8 +40,8 @@ Rectangle {
         let _l = v['languages'];
         let _r = v['reqs'];
         // console.log(_t, _d, _l, _r);
-        let pretty_title = ((_t === undefined) ? "Нет информации об игре" : _t);
-        let pretty_description = ((_d === undefined) ? "Нет информации об игре" : _d);
+        let pretty_title = ((_t === undefined) ? "Поиск информации..." : _t);
+        let pretty_description = ((_d === undefined) ? "Поиск информации..." : _d);
         description.text = "Наименование игры:\n" + pretty_title + "\n\nОписание игры:\n" + pretty_description;
     }
 
@@ -386,6 +386,9 @@ Rectangle {
         c[i].forceActiveFocus();
     }
 
+    function setGameData(result){
+        description.text = "Наименование игры:\n" + result['title'] + "\n\nОписание игры:\n" + result['desc']
+    }
 
     function onGamepadAxisLeft(done){
         if(window.scene !== S.gameInfoScene) return;

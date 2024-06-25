@@ -28,6 +28,10 @@ Window {
             // console.log("core_app: gameEnded");
             window.scene = SceneConstants.gameInfoScene;
         }
+        function onGotGameData(result) {
+            // console.log(JSON.stringify(result))
+            gameInfoScene.setGameData(result)
+        }
         function onGamepadClickedLB(done){
             window._trigger("onGamepadClickedLB", done);
         }
