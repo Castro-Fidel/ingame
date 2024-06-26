@@ -11,7 +11,6 @@ Rectangle {
 
     color: "#00000000"
 
-
     onVisibleChanged: {
         tabs.visible = container.visible;
     }
