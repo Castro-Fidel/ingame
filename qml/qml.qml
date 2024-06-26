@@ -4,6 +4,8 @@ import QtQuick
 // Import all components from folder
 import "scenes"
 import "constants/scene.js" as SceneConstants
+import "constants/options.js" as SceneOptions
+
 
 Window {
     property string scene: SceneConstants.homeScene
@@ -73,6 +75,12 @@ Window {
     height: 480
     visible: true
     title: qsTr("Launcher")
+
+    Component.onCompleted: {
+        SceneOptions.readOptions();
+        if(SceneOptions.fullscreen == 1)
+            visibility = Window.FullScreen;
+    }
 
     Image {
         id: bg

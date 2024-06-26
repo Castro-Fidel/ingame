@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "../delegates"
 import "../constants/tabs.js" as TabConstants
 import "../constants/style.js" as Style
@@ -134,15 +135,16 @@ Rectangle {
                     id: buttonSystemManagement;
                     text: TabConstants.systemManagementTab;
                     width: 400;
-
+                    /*
                     onClicked: function(){
                         tabButtons.x = tabButtons.tempX
                         tabButtons.changeButtonActiveTab(this)
                         tabButtons.toggle = true
                         tabs.currentTab = TabConstants.systemManagementTab;
                         // tabs.changeTab();
-                        // console.log(tabs.urrentTab);
+                        console.log(tabs.currentTab);
                     }
+                    */
                     onReleased: tabButtons.toggle = false
                 }
                 TopMenuBut.TextButton {
@@ -166,20 +168,6 @@ Rectangle {
 
                 }
 
-                TopMenuBut.TextButton {
-                    id: testbut2
-                    text: "Test"
-                    //font.pixelSize: 60
-                    //height:Math.ceil(tabs.height/100 * 10)
-
-                    onClicked: function(){
-                        tabButtons.x = tabButtons.tempX
-                        tabButtons.changeButtonActiveTab(this)
-                        tabButtons.toggle = true
-                   }
-                    onReleased: tabButtons.toggle = false
-
-                }
 
             }
             Image {
@@ -198,47 +186,78 @@ Rectangle {
         }
 
     }
-    // Заглушка Системных настроек
+    // Заглушка Системных настроек !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Grid {
         id: systemManagementGrid
         visible: tabs.currentTab == TabConstants.systemManagementTab
 
-        columns: 3
+        columns: 1
         spacing: 2
+        anchors.centerIn: parent
 
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         Layout.topMargin: 190
+        // anchors.rightMargin: 0
+        // anchors.leftMargin: 0
+        // anchors.bottomMargin: 90
+
         anchors.rightMargin: 0
         anchors.leftMargin: 0
-        anchors.bottomMargin: 90
+        anchors.bottomMargin : 90
 
-        Rectangle {
-            color: "red";
-            width: 50;
-            height: 50;
+        Row {
+            Text {
+                font.family: globalFont.font
+                font.weight: 400
+                font.styleName: globalFont.font.styleName
+                font.pointSize: 16
+                text: "Полный экран при запуске:"
+                color: 'white'
+                opacity: 0.8
+            }
+            CheckBox {
+                onCheckedChanged: {
+                    if (checked) {
+                        window.visibility = Window.FullScreen
+                    } else {
+                        window.visibility = Window.Windowed
+                    }
+                }
+            }
         }
-        Rectangle {
-            color: "green";
-            width: 20;
-            height: 50;
+        Row {
+            Text {
+                font.family: globalFont.font
+                font.weight: 400
+                font.styleName: globalFont.font.styleName
+                font.pointSize: 16
+                color: 'white'
+                opacity: 0.8
+                text: "Каталог PortProton"
+            }
+            TextField {
+                id: pathTextField
+                width: 150
+                readOnly: true
+                text: "Выберите каталог"
+            }
+            Button {
+                width: 50
+                text: "Выбрать"
+                onClicked: fileDialog.open()
+            }
         }
-        Rectangle {
-            color: "blue";
-            width: 50;
-            height: 20;
-        }
-        Rectangle {
-            color: "cyan";
-            width: 50;
-            height: 50;
-        }
-        Rectangle {
-            color: "magenta";
-            width: 10;
-            height: 10;
+        FileDialog {
+            id: fileDialog
+            title: "Выберите каталог"
+            currentFolder: "/"
+            fileMode: FileDialog.Directory
+            onAccepted: {
+                pathTextField.text = fileDialog.currentFolder
+            }
         }
     }
 

@@ -6,6 +6,7 @@ from time import sleep
 from pathlib import Path
 from typing import AnyStr, Union
 
+import requests
 from PySide6 import QtCore
 from os.path import expanduser
 from desktop_parser import DesktopFile
@@ -15,6 +16,7 @@ from ingame.models.GamesModel import Game, GamesModel
 from ingame.models.GameAgent import GameAgent
 from PySide6.QtCore import Property, Signal, Slot, QObject, Qt
 
+from steamgrid import SteamGridDB
 
 class GameShortcut:
     def __init__(self, filename, product_name, icon):
@@ -57,6 +59,7 @@ class App(QtCore.QObject):
         self.setup()
 
     def setup(self):
+
         try:
             with open(self.home + self.config_location, 'r') as file:
                 self.portproton_location = file.read().strip()
@@ -64,7 +67,6 @@ class App(QtCore.QObject):
 
             self.games_model.clear()
             files = glob.glob(f"{self.portproton_location}/*.desktop")
-
             for val in files:
                 desktop_file = DesktopFile.from_file(val)
                 data = desktop_file.data
@@ -86,10 +88,10 @@ class App(QtCore.QObject):
                     continue
 
                 # TODO parse product name
+                url_img = find_image(_name)
 
-                _icon = (os.path.isfile(_icon) and _icon
+                _icon = (url_img
                          or os.path.realpath(f"{Path(__file__).resolve().parent}../../../qml/images/PUBG.png"))
-
                 # Автозапуск игры:
                 # PW_GUI_DISABLED_CS=1
                 # START_FROM_STEAM=1
@@ -168,3 +170,24 @@ class App(QtCore.QObject):
     @Property(QObject, constant=True)
     def games(self):
         return self.games_model
+
+
+def find_image(game_name):
+    steamgriddb = SteamGridDB('66827eabea66de47d036777ed2be87b2')
+
+    save_path = f"{Path(__file__).resolve().parent}/../../qml/images/{game_name}.png"
+    if os.path.exists(save_path):
+        print("FOUND!")
+        return save_path
+
+    result = steamgriddb.search_game(game_name)
+    grids = steamgriddb.get_grids_by_gameid(list([result[0].id]))
+    for grid in grids:
+        if grid.height == 900 and grid.width == 600:
+            url_img = grid.url
+            response = requests.get(url_img)
+            print(save_path)
+            with open(save_path, 'wb') as file:
+                file.write(response.content)
+            break
+    return url_img
