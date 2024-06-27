@@ -16,6 +16,8 @@ requests = "^2.31.0"
 desktop-parser = "^0.1.1"
 pygame = "^2.5.2"
 python-steam-api = "^2.0"
+python-steamgriddb = "^1.0.5"
+platformdirs = "^4.2.2"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.9.0"

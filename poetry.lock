@@ -256,6 +256,22 @@ files = [
 ]
 
 [[package]]
+name = "platformdirs"
+version = "4.2.2"
+description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "platformdirs-4.2.2-py3-none-any.whl", hash = "sha256:2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee"},
+    {file = "platformdirs-4.2.2.tar.gz", hash = "sha256:38b7b51f512eed9e84a22788b4bce1de17c0adb134d6becb09836e37d8654cd3"},
+]
+
+[package.extras]
+docs = ["furo (>=2023.9.10)", "proselint (>=0.13)", "sphinx (>=7.2.6)", "sphinx-autodoc-typehints (>=1.25.2)"]
+test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.4.3)", "pytest-cov (>=4.1)", "pytest-mock (>=3.12)"]
+type = ["mypy (>=1.8)"]
+
+[[package]]
 name = "pygame"
 version = "2.5.2"
 description = "Python Game Development"
@@ -408,6 +424,19 @@ full = ["python-steam-api[all]"]
 style = ["codespell[toml] (>=2.2.4)", "isort", "ruff (>=0.1.8)", "toml-sort", "yamllint"]
 
 [[package]]
+name = "python-steamgriddb"
+version = "1.0.5"
+description = "A Python wrapper for SteamGridDB's API"
+optional = false
+python-versions = "*"
+files = [
+    {file = "python-steamgriddb-1.0.5.tar.gz", hash = "sha256:036db7bb09865da73b40b68cf04fb9675cd18b4908275092d91f37bf16245069"},
+]
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
@@ -498,4 +527,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.13"
-content-hash = "a19b74dab3d3d62bbdfc01b2ab1b7d011607b45cd0601e65f6a83f16603ce099"
+content-hash = "8acdd92388f970774431a6b4f12e8e5c0d5d01c0d88d748ae7a4a049b50a5005"
