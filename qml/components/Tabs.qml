@@ -55,7 +55,7 @@ Rectangle {
                 id: iconLB
                 source: "../icons/XboxController/left-bumper.svg"
                 fillMode: Image.Tile
-                sourceSize.width: tabButtons.width / 100 * 15
+                sourceSize.height: buttonGames.height * 0.75// / 10
                 //sourceSize.height:
                 //Layout.alignment: Qt.AlignLeft;
                 anchors.leftMargin: window.width / 100 * 6
@@ -175,8 +175,8 @@ Rectangle {
                 source: "../icons/XboxController/right-bumper.svg"
                 fillMode: Image.Tile
                 //sourceSize.width: text.font.pixelSize * 2
-                //sourceSize.height: tabButtons.width / 10
-                sourceSize.width: tabButtons.width / 100 * 15
+                sourceSize.height: buttonGames.height * 0.75// / 10
+                //sourceSize.width: tabs.width / 100 * 5
                 //Layout.alignment: Qt.AlignRight;
                 anchors.verticalCenter: tabButtons.verticalCenter
                 anchors.rightMargin: window.width / 100 * 6
