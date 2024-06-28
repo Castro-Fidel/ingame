@@ -46,6 +46,12 @@ Window {
         function onGamepadAxisRight(done){
             window._trigger("onGamepadAxisRight", done);
         }
+        function onGamepadAxisUp(done){
+            window._trigger("onGamepadAxisUp", done);
+        }
+        function onGamepadAxisDown(done){
+            window._trigger("onGamepadAxisDown", done);
+        }
         function onGamepadClickedApply(done){
             window._trigger("onGamepadClickedApply", done);
         }
@@ -64,6 +70,8 @@ Window {
         scenes[SceneConstants.runningScene] = runningScene;
 
         let d = scenes[scene];
+
+        // console.log("CALLUP " + _method);
 
         if(d !== null && d[_method] !== undefined && d[_method] !== null)
             d[_method](args);

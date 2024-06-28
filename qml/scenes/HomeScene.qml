@@ -11,6 +11,7 @@ Rectangle {
 
     color: "#00000000"
 
+
     onVisibleChanged: {
         tabs.visible = container.visible;
     }
@@ -58,6 +59,12 @@ Rectangle {
     }
     function onGameListDetailsRetrievingProgress(args){
         tabs.onGameListDetailsRetrievingProgress(args)
+    }
+    function onGamepadAxisUp(args){
+        tabs.onGamepadAxisUp(args)
+    }
+    function onGamepadAxisDown(args){
+        tabs.onGamepadAxisDown(args)
     }
 
 }

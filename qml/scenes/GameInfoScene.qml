@@ -95,7 +95,7 @@ Rectangle {
     }
 
 
-    ColumnLayout{
+    ColumnLayout {
         // anchors.fill:parent
         anchors.left: parent.left
         anchors.top: parent.top
@@ -107,7 +107,7 @@ Rectangle {
         anchors.topMargin: parent.height / 100 * 3
 
         spacing: 6
-        ItemGroup{
+        ItemGroup {
             id: topPanel
             Button {
                 id: back
@@ -178,7 +178,7 @@ Rectangle {
                 }
             }
         }
-        Rectangle{
+        Rectangle {
             // Start pos
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -388,6 +388,13 @@ Rectangle {
 
     function setGameData(result){
         description.text = "Наименование игры:\n" + result['title'] + "\n\nОписание игры:\n" + result['desc']
+    }
+
+    function onGamepadAxisUp(done){
+        root.onGamepadAxisLeft(done);
+    }
+    function onGamepadAxisDown(done){
+        root.onGamepadAxisRight(done);
     }
 
     function onGamepadAxisLeft(done){

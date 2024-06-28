@@ -135,16 +135,12 @@ Rectangle {
                     id: buttonSystemManagement;
                     text: TabConstants.systemManagementTab;
                     width: 400;
-                    /*
                     onClicked: function(){
                         tabButtons.x = tabButtons.tempX
                         tabButtons.changeButtonActiveTab(this)
                         tabButtons.toggle = true
                         tabs.currentTab = TabConstants.systemManagementTab;
-                        // tabs.changeTab();
-                        console.log(tabs.currentTab);
                     }
-                    */
                     onReleased: tabButtons.toggle = false
                 }
                 TopMenuBut.TextButton {
@@ -168,6 +164,20 @@ Rectangle {
 
                 }
 
+                TopMenuBut.TextButton {
+                    id: testbut2
+                    text: "Test"
+                    //font.pixelSize: 60
+                    //height:Math.ceil(tabs.height/100 * 10)
+
+                    onClicked: function(){
+                        tabButtons.x = tabButtons.tempX
+                        tabButtons.changeButtonActiveTab(this)
+                        tabButtons.toggle = true
+                   }
+                    onReleased: tabButtons.toggle = false
+
+                }
 
             }
             Image {
@@ -186,78 +196,47 @@ Rectangle {
         }
 
     }
-    // Заглушка Системных настроек !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Заглушка Системных настроек
     Grid {
         id: systemManagementGrid
         visible: tabs.currentTab == TabConstants.systemManagementTab
 
-        columns: 1
+        columns: 3
         spacing: 2
-        anchors.centerIn: parent
 
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         Layout.topMargin: 190
-        // anchors.rightMargin: 0
-        // anchors.leftMargin: 0
-        // anchors.bottomMargin: 90
-
         anchors.rightMargin: 0
         anchors.leftMargin: 0
-        anchors.bottomMargin : 90
+        anchors.bottomMargin: 90
 
-        Row {
-            Text {
-                font.family: globalFont.font
-                font.weight: 400
-                font.styleName: globalFont.font.styleName
-                font.pointSize: 16
-                text: "Полный экран при запуске:"
-                color: 'white'
-                opacity: 0.8
-            }
-            CheckBox {
-                onCheckedChanged: {
-                    if (checked) {
-                        window.visibility = Window.FullScreen
-                    } else {
-                        window.visibility = Window.Windowed
-                    }
-                }
-            }
+        Rectangle {
+            color: "red";
+            width: 50;
+            height: 50;
         }
-        Row {
-            Text {
-                font.family: globalFont.font
-                font.weight: 400
-                font.styleName: globalFont.font.styleName
-                font.pointSize: 16
-                color: 'white'
-                opacity: 0.8
-                text: "Каталог PortProton"
-            }
-            TextField {
-                id: pathTextField
-                width: 150
-                readOnly: true
-                text: "Выберите каталог"
-            }
-            Button {
-                width: 50
-                text: "Выбрать"
-                onClicked: fileDialog.open()
-            }
+        Rectangle {
+            color: "green";
+            width: 20;
+            height: 50;
         }
-        FileDialog {
-            id: fileDialog
-            title: "Выберите каталог"
-            currentFolder: "/"
-            fileMode: FileDialog.Directory
-            onAccepted: {
-                pathTextField.text = fileDialog.currentFolder
-            }
+        Rectangle {
+            color: "blue";
+            width: 50;
+            height: 20;
+        }
+        Rectangle {
+            color: "cyan";
+            width: 50;
+            height: 50;
+        }
+        Rectangle {
+            color: "magenta";
+            width: 10;
+            height: 10;
         }
     }
 
@@ -312,7 +291,6 @@ Rectangle {
 
             // Повторитель
             Repeater {
-                id: gamesGridRepeater
                 model: core_app.games
                 // Карточка игры
                 Game {
@@ -366,7 +344,6 @@ Rectangle {
 
 
     // LOGIC
-
     property int focusedItems: 0;
     property int focusedTabs: 0;
 
@@ -401,14 +378,17 @@ Rectangle {
         if(window.scene !== S.homeScene) return;
 
         let c = gamesGrid.children;
+        let l = c.length - 1; // exclude QQuickRepeater
 
-        tabs.focusedItems += inc;
-        if(tabs.focusedItems >= c.length)
-            tabs.focusedItems = 0;
+        // console.log(tabs.focusedItems);
 
-        if(tabs.focusedItems < 0)
-            tabs.focusedItems = c.length - 1;
-
+        if(tabs.focusedItems + inc >= l) {
+            tabs.focusedItems = (c.focusedItems + inc === l - 1) ? 0 : l - 1;
+        } else if(tabs.focusedItems + inc < 0) {
+            tabs.focusedItems = (c.focusedItems + inc === 0) ? l - 1 : 0; //;
+        } else {
+            tabs.focusedItems += inc;
+        }
         c[tabs.focusedItems].forceActiveFocus();
         // gamesScroller.contentY = c[tabs.focusedItems].y; // not working
         // c[tabs.focusedItems].clicked();
@@ -422,7 +402,14 @@ Rectangle {
     function onGamepadClickedRB(args){
         tabs.applyTabsFocus(1)
     }
-    function onGamepadAxisLeft(args){
+
+    function onGamepadAxisUp(done){
+        tabs.applyItemsFocus(-gamesGrid.columns);
+    }
+    function onGamepadAxisDown(done){
+        tabs.applyItemsFocus(gamesGrid.columns);
+    }
+    function onGamepadAxisLeft(done){
         tabs.applyItemsFocus(-1)
     }
     function onGamepadAxisRight(args){
