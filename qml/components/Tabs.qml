@@ -291,6 +291,7 @@ Rectangle {
 
             // Повторитель
             Repeater {
+                id: gamesGridRepeater
                 model: core_app.games
                 // Карточка игры
                 Game {
