@@ -4,6 +4,7 @@ import requests
 from steam_web_api import Steam
 from steamgrid import SteamGridDB
 from ingame.models.GameDescription import GameDescription
+import time
 
 
 class GameAgent:
@@ -15,7 +16,7 @@ class GameAgent:
     def __init__(self, config_path, cache_path):
         super().__init__()
         # TODO: move API tokens to GUI settings tab / environmental variables
-        self.steam_grid_db_client = SteamGridDB('66827eabea66de47d036777ed2be87b2')
+        self.steam_grid_db_client = SteamGridDB("66827eabea66de47d036777ed2be87b2")
         self.steam_client = Steam("SOME_KEY_HERE_I_GUESS")
 
         self.config_path = config_path
@@ -32,15 +33,19 @@ class GameAgent:
     ''' USAGE '''
 
     def retrieve_game_description(self, game_name):
+
         if game_name not in self.data:
             # TODO: checkup for failed requests
             search_results = self.steam_client.apps.search_games(game_name)
-            self.add_game_description(search_results, game_name)
+            self.__add_game_description(search_results, game_name)
 
         game_description = self.data[game_name]
+
         return game_description.as_dict()
 
-    def steam_grid_db_retrieve_image(self, game_name):
+    ''' DATABASE '''
+
+    def __steam_grid_db_retrieve_image(self, game_name):
         try:
             save_path = f"{self.steam_grid_db_images_path}/{game_name}.png"
             if os.path.exists(save_path):
@@ -49,6 +54,7 @@ class GameAgent:
             # TODO: checkup for failed requests
             result = self.steam_grid_db_client.search_game(game_name)
             grids = self.steam_grid_db_client.get_grids_by_gameid(list([result[0].id]))
+
             # TODO: too slow, replace loop o(n) with o(1) if possible
             for grid in grids:
                 if grid.height == 900 and grid.width == 600:
@@ -62,10 +68,10 @@ class GameAgent:
         except:
             return ''
 
-    ''' DATABASE '''
-
-    def add_game_description(self, search_results, game_name):
+    def __add_game_description(self, search_results, game_name):
         game_description = GameDescription()
+        game_description.locked = True
+        self.data[game_name] = game_description
 
         # Steam game info
         if search_results['apps']:
@@ -90,9 +96,8 @@ class GameAgent:
             game_description.languages = app_data['supported_languages']
 
         # Steam Grid DB image retrieving
-        game_description.image_location_path = self.steam_grid_db_retrieve_image(game_name)
-
-        self.data[game_name] = game_description
+        game_description.image_location_path = self.__steam_grid_db_retrieve_image(game_name)
+        game_description.locked = False
         self.save_db()
 
     def save_db(self):

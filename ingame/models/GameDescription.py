@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class GameDescription:
+    locked: bool = False
     title: str = 'Информация не найдена!'
     desc: str = 'Информация не найдена!'
     languages: str = 'Информация не найдена!'

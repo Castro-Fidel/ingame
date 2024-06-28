@@ -293,6 +293,7 @@ Rectangle {
 
             // Повторитель
             Repeater {
+                id: gamesGridRepeater
                 model: core_app.games
                 // Карточка игры
                 Game {
@@ -346,6 +347,7 @@ Rectangle {
 
 
     // LOGIC
+
     property int focusedItems: 0;
     property int focusedTabs: 0;
 
@@ -393,27 +395,32 @@ Rectangle {
         // c[tabs.focusedItems].clicked();
     }
 
-    function onGamepadClickedLB(done){
-        if(window.scene !== S.homeScene) return;
+    /* SIGNALS */
+
+    function onGamepadClickedLB(args){
         tabs.applyTabsFocus(-1)
     }
-    function onGamepadClickedRB(done){
-        if(window.scene !== S.homeScene) return;
+    function onGamepadClickedRB(args){
         tabs.applyTabsFocus(1)
     }
-    function onGamepadAxisLeft(done){
-        if(window.scene !== S.homeScene) return;
+    function onGamepadAxisLeft(args){
         tabs.applyItemsFocus(-1)
     }
-    function onGamepadAxisRight(done){
-        if(window.scene !== S.homeScene) return;
+    function onGamepadAxisRight(args){
         tabs.applyItemsFocus(1)
     }
-    function onGamepadClickedApply(done){
+    function onGamepadClickedApply(args){
         if(window.scene !== S.homeScene) return;
-        // console.log("onGamepadClickedApply");
         let c = gamesGrid.children;
         c[tabs.focusedItems].press();
+    }
+    function onGameListDetailsRetrievingProgress(args) {
+        let progress = args[0];
+        console.log(progress);
+        if(progress === 1.0){
+            gamesGridRepeater.model = [];
+            gamesGridRepeater.model = core_app.games;
+        }
     }
 
 }

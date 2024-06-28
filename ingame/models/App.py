@@ -17,17 +17,11 @@ from ingame.models.GameEntry import GameEntry
 from ingame.models.GameAgent import GameAgent
 from PySide6.QtCore import Property, Signal, Slot, QObject, Qt
 
-
-class GameShortcut:
-    def __init__(self, filename, product_name, icon):
-        self.filename = filename
-        self.product_name = product_name
-        self.icon = icon
-
-
 class App(QtCore.QObject):
     app_name = "ingame"
     app_author = "foss"
+
+    game_list_details_retrieving_progress = Signal(float, name="gameListDetailsRetrievingProgress")
 
     game_started = Signal(bool, name="gameStarted")
     game_ended = Signal(bool, name="gameEnded")
@@ -108,13 +102,19 @@ class App(QtCore.QObject):
             print('An error occurred', e)
         pass
 
-    # TODO: refactor!
+    # TODO: fix: progress=1.0 not emitted if details already cached/downloaded
     def retrieve_games_details(self):
         def retrieve_games_details_thread(t):
+            t.game_list_details_retrieving_progress.emit(0.0)
+            all_count: int = len(self.games_model.games_list)
             game_entry: GameEntry
+            i: int = 0
             for game_entry in self.games_model.games_list:
                 game_description = t.agent.retrieve_game_description(game_entry.name)
                 game_entry.icon = game_description['image_location_path'] or game_entry.icon
+                t.game_list_details_retrieving_progress.emit(float(i) / all_count)
+                i += 1
+            t.game_list_details_retrieving_progress.emit(1.0)
 
         thread = threading.Thread(target=retrieve_games_details_thread, args=(self,))
         thread.start()
@@ -130,12 +130,12 @@ class App(QtCore.QObject):
 
     @Slot(str, result=dict)
     def get_game_data(self, game_name):
-        def search_thread(t, name):
+        def get_game_data_thread(t, name):
             search_result = t.agent.retrieve_game_description(name)
             t.data_found.emit(search_result)
             return
 
-        thread = threading.Thread(target=search_thread, args=(self, game_name))
+        thread = threading.Thread(target=get_game_data_thread, args=(self, game_name))
         thread.start()
 
     @Slot(str)
