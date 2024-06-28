@@ -17,6 +17,7 @@ from ingame.models.GameEntry import GameEntry
 from ingame.models.GameAgent import GameAgent
 from PySide6.QtCore import Property, Signal, Slot, QObject, Qt
 
+
 class App(QtCore.QObject):
     app_name = "ingame"
     app_author = "foss"
@@ -41,7 +42,8 @@ class App(QtCore.QObject):
         self.config_path = user_config_dir(App.app_name, App.app_author)
         self.cache_path = user_cache_dir(App.app_name, App.app_author)
 
-        self.games_model: GamesModel = GamesModel()
+        self.portproton_games_model: GamesModel = GamesModel()
+        self.native_games_model: GamesModel = GamesModel()
         self.portproton_config_location: str = '/.config/PortProton.conf'
         self.portproton_location: str = ''
         self.running_game_process: Union[subprocess.Popen, None] = None
@@ -65,11 +67,51 @@ class App(QtCore.QObject):
             with open(self.home + self.portproton_config_location, 'r') as file:
                 self.portproton_location = file.read().strip()
                 print(f'Current PortProton location: {self.portproton_location}')
+                self.__portproton_games_setup(glob.glob(f"{self.portproton_location}/*.desktop"))
+        except FileNotFoundError:
+            print('File not found')
+        except Exception as e:
+            print('An error occurred', e)
 
-            self.games_model.clear()
-            files = glob.glob(f"{self.portproton_location}/*.desktop")
+        self.__native_games_setup()
+        self.gamepad.run()
+        self.retrieve_games_details()
 
-            for val in files:
+    def __native_games_setup(self):
+        # Reference: https://askubuntu.com/a/490398
+        # TODO: replace with DesktopFile instance
+        self.native_games_model.clear()
+
+        for val in glob.glob("/usr/share/applications/*.desktop"):
+            try:
+                desktop_file = DesktopFile.from_file(val)
+                desktop_file_data = desktop_file.data
+                desktop_entry = desktop_file_data['Desktop Entry']
+
+                if 'Categories' not in desktop_entry:
+                    continue
+
+                # Game;ArcadeGame;
+                entry_categories = desktop_entry['Categories'] or ''
+                if "Game" not in entry_categories:
+                    continue
+
+                entry_name = desktop_entry['Name'] or 'generic'
+                entry_exec = 'Exec' in desktop_entry and desktop_entry['Exec'] or ''
+                entry_icon = '' # desktop_entry['Icon']
+
+                assert (isinstance(entry_name, str)
+                        and isinstance(entry_exec, str)
+                        and isinstance(entry_icon, str))
+
+                self.native_games_model.add_game(GameEntry(name=entry_name, icon=entry_icon, exec=entry_exec))
+            except:
+                continue
+
+    def __portproton_games_setup(self, files):
+        self.portproton_games_model.clear()
+        for val in files:
+            try:
                 desktop_file = DesktopFile.from_file(val)
                 desktop_file_data = desktop_file.data
                 desktop_entry = desktop_file_data['Desktop Entry']
@@ -96,31 +138,28 @@ class App(QtCore.QObject):
                 # Remove extra env in the beginning
                 entry_exec = f"env START_FROM_STEAM=1 {entry_exec[4:len(entry_exec)]}"
 
-                self.games_model.add_game(GameEntry(name=entry_name, icon=entry_icon, exec=entry_exec))
-
-            self.gamepad.run()
-            self.retrieve_games_details()
-        except FileNotFoundError:
-            print('File not found')
-        except Exception as e:
-            print('An error occurred', e)
-        pass
+                self.portproton_games_model.add_game(GameEntry(name=entry_name, icon=entry_icon, exec=entry_exec))
+            except:
+                continue
 
     # TODO: fix: progress=1.0 not emitted if details already cached/downloaded
     def retrieve_games_details(self):
-        def retrieve_games_details_thread(t):
+        def retrieve_games_details_thread(t, model):
             t.game_list_details_retrieving_progress.emit(0.0)
-            all_count: int = len(self.games_model.games_list)
+            all_count: int = len(model.games_list)
             game_entry: GameEntry
             i: int = 0
-            for game_entry in self.games_model.games_list:
+            for game_entry in model.games_list:
                 game_description = t.agent.retrieve_game_description(game_entry.name)
                 game_entry.icon = game_description['image_location_path'] or game_entry.icon
                 t.game_list_details_retrieving_progress.emit(float(i) / all_count)
                 i += 1
             t.game_list_details_retrieving_progress.emit(1.0)
 
-        thread = threading.Thread(target=retrieve_games_details_thread, args=(self,))
+        thread = threading.Thread(target=retrieve_games_details_thread, args=(self, self.portproton_games_model))
+        thread.start()
+
+        thread = threading.Thread(target=retrieve_games_details_thread, args=(self, self.native_games_model))
         thread.start()
 
     ''' CALLBACKS '''
@@ -165,4 +204,8 @@ class App(QtCore.QObject):
 
     @Property(QObject, constant=True)
     def games(self):
-        return self.games_model
+        return self.portproton_games_model
+
+    @Property(QObject, constant=True)
+    def native_games(self):
+        return self.native_games_model
