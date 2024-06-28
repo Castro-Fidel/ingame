@@ -41,20 +41,23 @@ Rectangle {
         anchors.rightMargin: 0
     }
 
-    function onGamepadClickedLB(done){
-        tabs.onGamepadClickedLB(done)
+    function onGamepadClickedLB(args){
+        tabs.onGamepadClickedLB(args)
     }
-    function onGamepadClickedRB(done){
-        tabs.onGamepadClickedRB(done)
+    function onGamepadClickedRB(args){
+        tabs.onGamepadClickedRB(args)
     }
-    function onGamepadAxisLeft(done){
-        tabs.onGamepadAxisLeft(done)
+    function onGamepadAxisLeft(args){
+        tabs.onGamepadAxisLeft(args)
     }
-    function onGamepadAxisRight(done){
-        tabs.onGamepadAxisRight(done)
+    function onGamepadAxisRight(args){
+        tabs.onGamepadAxisRight(args)
     }
-    function onGamepadClickedApply(done){
-        tabs.onGamepadClickedApply(done)
+    function onGamepadClickedApply(args){
+        tabs.onGamepadClickedApply(args)
+    }
+    function onGameListDetailsRetrievingProgress(args){
+        tabs.onGameListDetailsRetrievingProgress(args)
     }
 
 }

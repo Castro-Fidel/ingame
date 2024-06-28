@@ -1,78 +1,115 @@
 import os
 import pickle
+import requests
 from steam_web_api import Steam
-
-# TODO:
-#  [?] Определиться, используется ли Lutris. Если да, вместо этого будет обращение к нему. Если нет,
-#    продумать "рыбу" более логично.
-#  [?] Починить отображение системных требований (точнее, разобраться, что именно возвращает API.
-#  [done 1/2] Додумать форматированные данные, что именно мы видим на странице игры?
+from steamgrid import SteamGridDB
+from ingame.models.GameDescription import GameDescription
+import time
 
 
 class GameAgent:
-    generic_name = "Risk of rain 2"
-    datapath = ".agent-data"
-    all_data = dict()
-    scenario = 0
+    # generic_name = "Risk of rain 2"
+    # scenario = 0
+    # db_storage_path = ".agent-data"
+    # data = dict()
 
-    def __init__(self):
+    def __init__(self, config_path, cache_path):
         super().__init__()
-        agent_key = "SOME_KEY_HERE_I_GUESS"
-        self.steam_process = Steam(agent_key)
-        self.get_all_data()
+        # TODO: move API tokens to GUI settings tab / environmental variables
+        self.steam_grid_db_client = SteamGridDB("66827eabea66de47d036777ed2be87b2")
+        self.steam_client = Steam("SOME_KEY_HERE_I_GUESS")
 
+        self.config_path = config_path
+        self.cache_path = cache_path
+        self.db_storage_path = config_path + "/.agent-data"
+        self.steam_grid_db_images_path = cache_path + "/steam_grid_db_images"
+        self.data = dict()
 
+        os.makedirs(self.config_path, exist_ok=True, mode=0o755)
+        os.makedirs(self.steam_grid_db_images_path, exist_ok=True, mode=0o755)
 
-    def add_game_info(self, data, name):
-        if not data['apps']:
-            self.all_data[name] = 0
-        else:
-            game_id = data['apps'][0]['id']
-            data = self.steam_process.apps.get_app_details(game_id)
-            self.all_data[name] = data[str(game_id[0])]['data']
-        with open(self.datapath, "wb+") as datafile:
-            pickle.dump(self.all_data, datafile)
-        self.get_all_data()
+        self.load_db()
 
-    def search_game(self, game_name):
+    ''' USAGE '''
 
-        self.get_all_data()
+    def retrieve_game_description(self, game_name):
 
-        if game_name in self.all_data:
-            print("ITS HERE!")
-        else:
-            search_results = self.steam_process.apps.search_games(game_name)
-            self.add_game_info(search_results, game_name)
-        return self.format_game_data(self.all_data[game_name])
+        if game_name not in self.data:
+            # TODO: checkup for failed requests
+            search_results = self.steam_client.apps.search_games(game_name)
+            self.__add_game_description(search_results, game_name)
 
-    def get_all_data(self):
+        game_description = self.data[game_name]
+
+        return game_description.as_dict()
+
+    ''' DATABASE '''
+
+    def __steam_grid_db_retrieve_image(self, game_name):
         try:
-            with open(self.datapath, "rb") as datafile:
-                self.all_data = pickle.load(datafile)
+            save_path = f"{self.steam_grid_db_images_path}/{game_name}.png"
+            if os.path.exists(save_path):
+                return save_path
+
+            # TODO: checkup for failed requests
+            result = self.steam_grid_db_client.search_game(game_name)
+            grids = self.steam_grid_db_client.get_grids_by_gameid(list([result[0].id]))
+
+            # TODO: too slow, replace loop o(n) with o(1) if possible
+            for grid in grids:
+                if grid.height == 900 and grid.width == 600:
+                    url_img = grid.url
+                    response = requests.get(url_img)
+                    with open(save_path, 'wb') as file:
+                        file.write(response.content)
+                    # return url_img
+                    return save_path
+            return ''
+        except:
+            return ''
+
+    def __add_game_description(self, search_results, game_name):
+        game_description = GameDescription()
+        game_description.locked = True
+        self.data[game_name] = game_description
+
+        # Steam game info
+        if search_results['apps']:
+            game_id = search_results['apps'][0]['id'][0]
+            # TODO: checkup for failed requests
+            app_details = self.steam_client.apps.get_app_details(game_id)
+            app_data = app_details[str(game_id)]['data']
+
+            game_description.title = app_data['name']
+            game_description.desc = app_data['short_description']
+            game_description.reqs = ((app_data['linux_requirements']
+                                      and (
+                                              app_data['linux_requirements']['minimum'] or
+                                              app_data['linux_requirements']['recommended']
+                                      ))
+                                     or (app_data['pc_requirements']
+                                         and (
+                                                 app_data['pc_requirements']['minimum'] or
+                                                 app_data['pc_requirements']['recommended']
+                                         ))
+                                     or '-')
+            game_description.languages = app_data['supported_languages']
+
+        # Steam Grid DB image retrieving
+        game_description.image_location_path = self.__steam_grid_db_retrieve_image(game_name)
+        game_description.locked = False
+        self.save_db()
+
+    def save_db(self):
+        with open(self.db_storage_path, "wb+") as datafile:
+            pickle.dump(self.data, datafile)
+
+    def load_db(self):
+        try:
+            with open(self.db_storage_path, "rb") as datafile:
+                self.data = pickle.load(datafile)
         except FileNotFoundError:
-            self.all_data = dict()
-
-    def format_game_data(self, game_data):
-        formatted_data = dict()
-        if game_data != 0:
-            formatted_data['title'] = game_data['name']
-            formatted_data['desc'] = game_data['short_description']
-            formatted_data['languages'] = game_data['supported_languages']
-            formatted_data['reqs'] = game_data['linux_requirements']
-            # for key, value in formatted_data.items():
-            #     print("{0}: {1}".format(key, value))
-        else:
-            #TODO исправить это недоразумение, временная затычка
-            formatted_data['title'] = "Информация не найдена!"
-            formatted_data['desc'] = "Информация не найдена!"
-            formatted_data['languages'] = "Информация не найдена!"
-            formatted_data['reqs'] = "Информация не найдена!"
-
-        # print(formatted_data)
-        return formatted_data
+            self.data = dict()
 
     def clean_data(self):
-        self.all_data = dict()
-        with open(self.datapath, "wb") as datafile:
-            pickle.dump(self.all_data, datafile)
-            print("data cleaned")
+        self.data = dict()

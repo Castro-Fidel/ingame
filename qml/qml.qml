@@ -16,7 +16,7 @@ Window {
     }
     FontLoader {
         id: globalFont;
-        source: "./fonts/OpenSans-VariableFont_wdth.ttf"
+        source: "./fonts/OpenSans-VariableFont.ttf"
     }
 
 
@@ -51,6 +51,9 @@ Window {
         }
         function onGamepadClickedBack(done){
             window._trigger("onGamepadClickedBack", done);
+        }
+        function onGameListDetailsRetrievingProgress(progress){
+            homeScene.onGameListDetailsRetrievingProgress([progress]);
         }
     }
 
