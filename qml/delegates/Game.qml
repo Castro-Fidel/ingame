@@ -1,11 +1,9 @@
 import QtQuick
 import "../constants/scene.js" as SceneConstants
 //import "../components/" as C
-
 import QtQuick.Controls as C
 // Подключить для работы с типом объекта LinearGradient
-
-
+import Qt5Compat.GraphicalEffects
 C.Button {
     property string gameTitle: "Generic title"
     property string gameIcon: ""
@@ -147,6 +145,31 @@ C.Button {
             duration: 1000;
         }
     }
+    Image {
+        id: blurImage
+        source: game.gameIcon
+        //anchors.fill:game
+        width: game.width
+        height: game.height
+        //sourceSize: Qt.size(parent.width, parent.height)
+        fillMode: Image.PreserveAspectCrop
+        smooth: true
+        visible: false
+        clip: true
+
+        Rectangle {
+            id: b1
+            opacity: 0.3
+            anchors.fill: parent
+            color: "#000000"
+        }
+
+    }
+    FastBlur {
+            anchors.fill: blurImage
+            source: blurImage
+            radius: 32
+        }
 
     // Картинка на карточке
     Image {
@@ -157,6 +180,7 @@ C.Button {
         anchors.bottom: parent.bottom
         source: game.gameIcon
         fillMode: Image.PreserveAspectFit
+
 
 
         // Градиент + название игры
