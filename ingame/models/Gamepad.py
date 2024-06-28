@@ -11,6 +11,8 @@ class Gamepad:
     RB_BUTTON = 5
     LEFT_RIGHT_AXIS = 0
     LEFT_RIGHT_AXIS_SENSITIVITY = 0.7
+    UP_DOWN_AXIS = 1
+    UP_DOWN_AXIS_SENSITIVITY = 0.7
     APPLY_BUTTON = 0
     BACK_BUTTON = 1
 
@@ -23,12 +25,16 @@ class Gamepad:
         self.last_apply_clicked: bool = False
         self.last_left_clicked: bool = False
         self.last_right_clicked: bool = False
+        self.last_up_clicked: bool = False
+        self.last_down_clicked: bool = False
         self.last_back_clicked: bool = False
 
         self.lb_clicked: () = lambda: None
         self.rb_clicked: () = lambda: None
         self.l_clicked: () = lambda: None
         self.r_clicked: () = lambda: None
+        self.u_clicked: () = lambda: None
+        self.d_clicked: () = lambda: None
         self.back_clicked: () = lambda: None
         self.apply_clicked: () = lambda: None
 
@@ -64,6 +70,7 @@ class Gamepad:
                 rb_button = self.joystick.get_button(self.RB_BUTTON)
                 apply_button = self.joystick.get_button(self.APPLY_BUTTON)
                 left_right_axis = self.joystick.get_axis(self.LEFT_RIGHT_AXIS)
+                up_down_axis = self.joystick.get_axis(self.UP_DOWN_AXIS)
                 back_button = self.joystick.get_button(self.BACK_BUTTON)
 
                 # LB
@@ -109,6 +116,23 @@ class Gamepad:
 
                 if (not left_right_axis >= self.LEFT_RIGHT_AXIS_SENSITIVITY) and self.last_right_clicked:
                     self.last_right_clicked = not self.last_right_clicked
+
+                # UP
+                if (up_down_axis <= -self.UP_DOWN_AXIS_SENSITIVITY) and not self.last_up_clicked:
+                    self.last_up_clicked = not self.last_up_clicked
+                    self.u_clicked()
+
+                if not (up_down_axis <= -self.UP_DOWN_AXIS_SENSITIVITY) and self.last_up_clicked:
+                    self.last_up_clicked = not self.last_up_clicked
+
+                # DOWN
+
+                if (up_down_axis >= self.UP_DOWN_AXIS_SENSITIVITY) and not self.last_down_clicked:
+                    self.last_down_clicked = not self.last_down_clicked
+                    self.d_clicked()
+
+                if (not up_down_axis >= self.UP_DOWN_AXIS_SENSITIVITY) and self.last_down_clicked:
+                    self.last_down_clicked = not self.last_down_clicked
 
                 # BACK
                 if back_button and not self.last_back_clicked:

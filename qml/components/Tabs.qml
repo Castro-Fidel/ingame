@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import "../delegates"
+import '../tabs'
 import "../constants/tabs.js" as TabConstants
 import "../constants/style.js" as Style
 import "../components" as TopMenuBut
@@ -11,6 +12,7 @@ import "../constants/scene.js" as S
 // TODO: code refactor
 Rectangle {
     property string currentTab: TabConstants.gamesTab
+    property var currentTabInstance: portProtonGamesTab
     property var activeButtonTab: buttonGames
 
     id: tabs
@@ -131,30 +133,32 @@ Rectangle {
                     tabs.activeButtonTab.isActive = true;
                 }
 
+                // TODO: поменять всё на Repeater
+                // слишком много дубликатов кода
+
                 TopMenuBut.TextButton {
                     id: buttonSystemManagement;
                     text: TabConstants.systemManagementTab;
                     width: 400;
-                    /*
                     onClicked: function(){
-                        tabButtons.x = tabButtons.tempX
-                        tabButtons.changeButtonActiveTab(this)
-                        tabButtons.toggle = true
+                        tabButtons.x = tabButtons.tempX;
+                        tabButtons.changeButtonActiveTab(this);
+                        tabButtons.toggle = true;
                         tabs.currentTab = TabConstants.systemManagementTab;
-                        // tabs.changeTab();
-                        console.log(tabs.currentTab);
+                        tabs.currentTabInstance = systemManagementGrid;
                     }
-                    */
                     onReleased: tabButtons.toggle = false
                 }
                 TopMenuBut.TextButton {
                     id: buttonGames
                     text: TabConstants.gamesTab
                     onClicked: function(){
-                        tabButtons.x = tabButtons.tempX
-                        tabButtons.changeButtonActiveTab(this)
-                        tabButtons.toggle = true
+                        tabButtons.x = tabButtons.tempX;
+                        tabButtons.changeButtonActiveTab(this);
+                        tabButtons.toggle = true;
                         tabs.currentTab = TabConstants.gamesTab;
+                        tabs.currentTabInstance = portProtonGamesTab;
+
                         //if(core_app === undefined) return;
                         //console.log("core_app found");
 
@@ -168,6 +172,22 @@ Rectangle {
 
                 }
 
+                TopMenuBut.TextButton {
+                    id: nativeGamesButton
+                    text: TabConstants.nativeGamesTab
+                    //font.pixelSize: 60
+                    //height:Math.ceil(tabs.height/100 * 10)
+
+                    onClicked: function(){
+                        tabButtons.x = tabButtons.tempX;
+                        tabButtons.changeButtonActiveTab(this);
+                        tabButtons.toggle = true;
+                        tabs.currentTab = TabConstants.nativeGamesTab;
+                        tabs.currentTabInstance = nativeGamesTab;
+                   }
+                    onReleased: tabButtons.toggle = false
+
+                }
 
             }
             Image {
@@ -186,188 +206,69 @@ Rectangle {
         }
 
     }
-    // Заглушка Системных настроек !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Заглушка Системных настроек
     Grid {
         id: systemManagementGrid
         visible: tabs.currentTab == TabConstants.systemManagementTab
 
-        columns: 1
+        columns: 3
         spacing: 2
-        anchors.centerIn: parent
 
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         Layout.topMargin: 190
-        // anchors.rightMargin: 0
-        // anchors.leftMargin: 0
-        // anchors.bottomMargin: 90
-
         anchors.rightMargin: 0
         anchors.leftMargin: 0
-        anchors.bottomMargin : 90
+        anchors.bottomMargin: 90
 
-        Row {
-            Text {
-                font.family: globalFont.font
-                font.weight: 400
-                font.styleName: globalFont.font.styleName
-                font.pointSize: 16
-                text: "Полный экран при запуске:"
-                color: 'white'
-                opacity: 0.8
-            }
-            CheckBox {
-                onCheckedChanged: {
-                    if (checked) {
-                        window.visibility = Window.FullScreen
-                    } else {
-                        window.visibility = Window.Windowed
-                    }
-                }
-            }
+        Rectangle {
+            color: "red";
+            width: 50;
+            height: 50;
         }
-        Row {
-            Text {
-                font.family: globalFont.font
-                font.weight: 400
-                font.styleName: globalFont.font.styleName
-                font.pointSize: 16
-                color: 'white'
-                opacity: 0.8
-                text: "Каталог PortProton"
-            }
-            TextField {
-                id: pathTextField
-                width: 150
-                readOnly: true
-                text: "Выберите каталог"
-            }
-            Button {
-                width: 50
-                text: "Выбрать"
-                onClicked: fileDialog.open()
-            }
+        Rectangle {
+            color: "green";
+            width: 20;
+            height: 50;
         }
-        FileDialog {
-            id: fileDialog
-            title: "Выберите каталог"
-            currentFolder: "/"
-            fileMode: FileDialog.Directory
-            onAccepted: {
-                pathTextField.text = fileDialog.currentFolder
-            }
+        Rectangle {
+            color: "blue";
+            width: 50;
+            height: 20;
+        }
+        Rectangle {
+            color: "cyan";
+            width: 50;
+            height: 50;
+        }
+        Rectangle {
+            color: "magenta";
+            width: 10;
+            height: 10;
         }
     }
 
-    // Сетка игр
-    ScrollView {
+    // PortProton Games
+    GamesTab {
+        id: portProtonGamesTab
         visible: tabs.currentTab == TabConstants.gamesTab
-        id: gamesScroller
-        anchors.fill: parent
-        anchors.topMargin: topNavigation.height
-        ScrollBar.vertical: ScrollBar {
-            id: scrolV;
-            height: parent.height
-            opacity: 0
-            position: 0
-
-            property double fromAnim: 0.0
-            property double toAnim: 0.0
-        }
-
-        function scrollToY(y,HItem) {
-            scrolV.fromAnim = scrolV.position
-            scrolV.position = (1.0 - scrolV.size) * y / gamesScroller.height
-            scrolV.toAnim = (1.0 - scrolV.size) * y / gamesScroller.height
-            if(scrolV.toAnim != scrolV.fromAnim)
-                scrollAnimation.start()
-        }
-        // Анимация авто скролла
-        PropertyAnimation {
-            to: scrolV.toAnim;
-            from: scrolV.fromAnim;
-            target: scrolV;
-            id: scrollAnimation;
-            property: "position";
-            duration: 200;
-        }
-
-        GridLayout {
-            id: gamesGrid
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            columns: 5
-            rows: Math.max(Math.ceil(children.length / columns), 1)
-
-            anchors.rightMargin: rowSpacing * 2
-            anchors.leftMargin: rowSpacing * 2
-            anchors.bottomMargin : 90
-            anchors.topMargin: Math.floor( gamesScroller.width / 100 * 3)
-            rowSpacing: Math.floor( gamesScroller.width / 100 * 3)
-            columnSpacing: rowSpacing
-
-            // Повторитель
-            Repeater {
-                id: gamesGridRepeater
-                model: core_app.games
-                // Карточка игры
-                Game {
-                    id: game
-                    gameTitle: model.name
-                    gameExec: model.exec
-                    gameIcon: model.icon
-                    Layout.bottomMargin :
-                        (index - index % gamesGrid.columns) /
-                        gamesGrid.columns === gamesGrid.rows - 1 ? gamesGrid.rowSpacing * 2 : 0
-                    onFocusChanged: if(focus) {
-                        gamesScroller.scrollToY(y);
-                    }
-                    Layout.preferredWidth:
-                        (gamesScroller.width - (gamesGrid.columns -1) *
-                        gamesGrid.rowSpacing - gamesGrid.anchors.rightMargin - gamesGrid.anchors.leftMargin)
-                        / gamesGrid.columns
-                    Layout.preferredHeight: Layout.preferredWidth / 2 * 3
-
-                    // Component.onCompleted: {a3.start()}
-
-                    // SequentialAnimation  {
-                    //     id:a3
-
-                    //     NumberAnimation {
-                    //         property:Layout.topMargin;
-                    //         easing.type: Easing.InOutQuad;
-                    //         duration: 300;
-                    //         from: 100//Layout.preferredHeight;
-                    //         to: 0;
-                    //     }
-                    //     NumberAnimation {
-                    //         property:Layout.topMargin;
-                    //         easing.type: Easing.InOutQuad;
-                    //         duration: 300;
-                    //         from: 0//Layout.preferredHeight;
-                    //         to: 100;
-                    //     }
-                    //     loops: Animation.Infinite
-                    // }
-
-                    // Layout.topMargin: Layout.preferredHeight
-
-                }
-            }
-        }
+        model: core_app.games
     }
 
+    // Native games
+    GamesTab {
+        id: nativeGamesTab
+        visible: tabs.currentTab == TabConstants.nativeGamesTab
+        model: core_app.native_games
+    }
 
 
 
 
     // LOGIC
 
-    property int focusedItems: 0;
     property int focusedTabs: 0;
 
     function getTabs(){
@@ -375,7 +276,7 @@ Rectangle {
             buttonSystemManagement,
             buttonGames,
             // testbut1,
-            testbut2
+            nativeGamesButton
         ];
     }
 
@@ -397,48 +298,38 @@ Rectangle {
         // tabButtons.changeButtonActiveTab(item);
     }
 
-    function applyItemsFocus(inc){
-        if(window.scene !== S.homeScene) return;
 
-        let c = gamesGrid.children;
-
-        tabs.focusedItems += inc;
-        if(tabs.focusedItems >= c.length)
-            tabs.focusedItems = 0;
-
-        if(tabs.focusedItems < 0)
-            tabs.focusedItems = c.length - 1;
-
-        c[tabs.focusedItems].forceActiveFocus();
-        // gamesScroller.contentY = c[tabs.focusedItems].y; // not working
-        // c[tabs.focusedItems].clicked();
-    }
 
     /* SIGNALS */
 
     function onGamepadClickedLB(args){
-        tabs.applyTabsFocus(-1)
+        tabs.applyTabsFocus(-1);
     }
     function onGamepadClickedRB(args){
-        tabs.applyTabsFocus(1)
+        tabs.applyTabsFocus(1);
     }
-    function onGamepadAxisLeft(args){
-        tabs.applyItemsFocus(-1)
+
+    function onGamepadAxisUp(done){
+        currentTabInstance.applyItemsFocusByLine(-1);
+    }
+    function onGamepadAxisDown(done){
+        currentTabInstance.applyItemsFocusByLine(1);
+    }
+    function onGamepadAxisLeft(done){
+        currentTabInstance.applyItemsFocus(-1);
     }
     function onGamepadAxisRight(args){
-        tabs.applyItemsFocus(1)
+        currentTabInstance.applyItemsFocus(1);
     }
     function onGamepadClickedApply(args){
         if(window.scene !== S.homeScene) return;
-        let c = gamesGrid.children;
-        c[tabs.focusedItems].press();
+        currentTabInstance.pressFocusedItem();
     }
     function onGameListDetailsRetrievingProgress(args) {
         let progress = args[0];
-        console.log(progress);
         if(progress === 1.0){
-            gamesGridRepeater.model = [];
-            gamesGridRepeater.model = core_app.games;
+            portProtonGamesTab.refreshItems(core_app.games);
+            nativeGamesTab.refreshItems(core_app.native_games);
         }
     }
 
