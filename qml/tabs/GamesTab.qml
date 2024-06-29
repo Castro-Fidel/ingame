@@ -112,7 +112,7 @@ ScrollView {
         }
         Rectangle{
             Layout.preferredWidth: 1
-            Layout.preferredHeight: 1
+            Layout.preferredHeight: 10
             color: "red"
             opacity: 0
 
