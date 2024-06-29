@@ -92,6 +92,17 @@ C.Button {
                 opacity: 1;
             }
 
+        },
+        State {
+            name: "";
+            PropertyChanges {
+                target: game;
+                scale: 1;
+            }
+            PropertyChanges {
+                target: bgNameGrad;
+                opacity: 0;
+            }
         }
     ]
 

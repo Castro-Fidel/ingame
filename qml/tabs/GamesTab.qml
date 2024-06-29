@@ -15,6 +15,7 @@ ScrollView {
     id: gamesScroller
     anchors.fill: parent
     anchors.topMargin: topNavigation.height
+
     ScrollBar.vertical: ScrollBar {
         id: scrolV;
         height: parent.height
@@ -50,11 +51,12 @@ ScrollView {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         columns: 5
-        rows: Math.max(Math.ceil(children.length / columns), 1)
+        rows: Math.max(Math.ceil(children.length / columns), 1)+1
 
         anchors.rightMargin: rowSpacing * 2
         anchors.leftMargin: rowSpacing * 2
         anchors.bottomMargin : 90
+
         anchors.topMargin: Math.floor( gamesScroller.width / 100 * 3)
         rowSpacing: Math.floor( gamesScroller.width / 100 * 3)
         columnSpacing: rowSpacing
@@ -71,7 +73,7 @@ ScrollView {
                 gameIcon: model.icon
                 Layout.bottomMargin :
                     (index - index % gamesGrid.columns) /
-                    gamesGrid.columns === gamesGrid.rows - 1 ? gamesGrid.rowSpacing * 2 : 0
+                    gamesGrid.columns === gamesGrid.rows - 2 ? gamesGrid.rowSpacing * 2 : 0
                 onFocusChanged: if(focus) {
                     gamesScroller.scrollToY(y);
                 }
@@ -106,6 +108,14 @@ ScrollView {
                 // Layout.topMargin: Layout.preferredHeight
 
             }
+
+        }
+        Rectangle{
+            Layout.preferredWidth: 1
+            Layout.preferredHeight: 10
+            color: "red"
+            opacity: 0
+
         }
     }
 
