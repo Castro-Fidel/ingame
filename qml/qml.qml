@@ -4,7 +4,6 @@ import QtQuick
 // Import all components from folder
 import "scenes"
 import "constants/scene.js" as SceneConstants
-import "constants/options.js" as SceneOptions
 
 
 Window {
@@ -18,7 +17,10 @@ Window {
         id: globalFont;
         source: "./fonts/OpenSans-VariableFont.ttf"
     }
-
+    QtObject {
+        id: systemSettings;
+        property string fullscreen: '1';
+    }
 
     Connections {
         target: core_app
@@ -77,6 +79,22 @@ Window {
             d[_method](args);
     }
 
+    function applySettings(){
+        if (systemSettings.fullscreen=='1')
+            visibility = Window.FullScreen
+        else
+            visibility = Window.Windowed
+        let newSettings = {
+           fullscreen: systemSettings.fullscreen
+        }
+        core_app.commit_settings(newSettings)
+    }
+
+    function updateSettings(settings){
+        systemSettings.fullscreen = settings['fullscreen']
+        applySettings()
+    }
+
     Component.onDestruction: {
         // console.log("Desctructing window");
     }
@@ -88,9 +106,8 @@ Window {
     title: qsTr("Launcher")
 
     Component.onCompleted: {
-        SceneOptions.readOptions();
-        if(SceneOptions.fullscreen == 1)
-            visibility = Window.FullScreen;
+        let settings = core_app.get_settings()
+        updateSettings(settings)
     }
 
     Image {
