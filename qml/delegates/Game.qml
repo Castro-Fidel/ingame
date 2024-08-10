@@ -4,6 +4,9 @@ import "../constants/scene.js" as SceneConstants
 import QtQuick.Controls as C
 // Подключить для работы с типом объекта LinearGradient
 import Qt5Compat.GraphicalEffects
+
+// TODO: set Entry to be parent (root element) of Game
+
 C.Button {
     property string gameTitle: "Generic title"
     property string gameIcon: ""

@@ -11,6 +11,8 @@ from os.path import expanduser
 from desktop_parser import DesktopFile
 from platformdirs import user_cache_dir, user_config_dir
 
+from ingame.models.EntriesModel import EntriesModel
+from ingame.models.Entry import Entry
 from ingame.models.Gamepad import Gamepad
 from ingame.models.GamesModel import GamesModel
 from ingame.models.GameEntry import GameEntry
@@ -44,6 +46,7 @@ class App(QtCore.QObject):
 
         self.portproton_games_model: GamesModel = GamesModel()
         self.native_games_model: GamesModel = GamesModel()
+        self.system_entries_model: EntriesModel = EntriesModel()
         self.portproton_config_location: str = '/.config/PortProton.conf'
         self.portproton_location: str = ''
         self.running_game_process: Union[subprocess.Popen, None] = None
@@ -74,6 +77,7 @@ class App(QtCore.QObject):
             print('An error occurred', e)
 
         self.__native_games_setup()
+        self.__system_entries_setup()
         self.gamepad.run()
         self.retrieve_games_details()
 
@@ -142,6 +146,10 @@ class App(QtCore.QObject):
             except:
                 continue
 
+    def __system_entries_setup(self):
+        self.system_entries_model.add_entry(Entry(name="Exit launcher", icon="../images/exit.svg", exec="exit"))
+        pass
+
     # TODO: fix: progress=1.0 not emitted if details already cached/downloaded
     def retrieve_games_details(self):
         def retrieve_games_details_thread(t, model):
@@ -209,3 +217,7 @@ class App(QtCore.QObject):
     @Property(QObject, constant=True)
     def native_games(self):
         return self.native_games_model
+
+    @Property(QObject, constant=True)
+    def system_entries(self):
+        return self.system_entries_model

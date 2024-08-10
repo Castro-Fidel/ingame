@@ -8,6 +8,9 @@ import "../constants/style.js" as Style
 import "../components" as TopMenuBut
 import "../constants/scene.js" as S
 
+// TODO: set to be child (dependent element) of EntriesTab
+// TODO: remove code duplication (!)
+
 ScrollView {
     property var model: buttonGames
 

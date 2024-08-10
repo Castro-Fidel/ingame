@@ -30,6 +30,10 @@ Rectangle {
     Component.onCompleted: {
         tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
         tabButtons.x = tabButtons.tempX;
+
+        // being required in EntriesTab directly (see tabs/EntriesTab.qml)
+        // systemManagementGrid.model = core_app.system_entries;
+
         // console.log("Tabs completed!");
     }
     onWidthChanged: function(){
@@ -206,62 +210,26 @@ Rectangle {
         }
 
     }
-    // Заглушка Системных настроек
-    Grid {
+    // System tab
+    EntriesTab {
         id: systemManagementGrid
         visible: tabs.currentTab == TabConstants.systemManagementTab
-
-        columns: 3
-        spacing: 2
-
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        Layout.topMargin: 190
-        anchors.rightMargin: 0
-        anchors.leftMargin: 0
-        anchors.bottomMargin: 90
-
-        Rectangle {
-            color: "red";
-            width: 50;
-            height: 50;
-        }
-        Rectangle {
-            color: "green";
-            width: 20;
-            height: 50;
-        }
-        Rectangle {
-            color: "blue";
-            width: 50;
-            height: 20;
-        }
-        Rectangle {
-            color: "cyan";
-            width: 50;
-            height: 50;
-        }
-        Rectangle {
-            color: "magenta";
-            width: 10;
-            height: 10;
-        }
+        // model: core_app.system_tab ?? [] // no action here for some reason, see Component.onComplete
+        // TODO: extra check here?
     }
 
     // PortProton Games
     GamesTab {
         id: portProtonGamesTab
         visible: tabs.currentTab == TabConstants.gamesTab
-        model: core_app.games
+        model: core_app.games // TODO: fix TypeError: Cannot read property 'games' of null (on application closed)
     }
 
     // Native games
     GamesTab {
         id: nativeGamesTab
         visible: tabs.currentTab == TabConstants.nativeGamesTab
-        model: core_app.native_games
+        model: core_app.native_games // TODO: fix TypeError: Cannot read property 'native_games' of null (on application closed)
     }
 
 
