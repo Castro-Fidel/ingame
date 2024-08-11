@@ -132,7 +132,8 @@ class App(QtCore.QObject):
 
                 # Ignore extra non-related desktop entries
                 if (len(entry_exec_split) <= 1 or
-                        ('data/scripts/start.sh' not in entry_exec_split[1] or '%F' in entry_exec_split[-1])):
+                        ('data/scripts/start.sh' not in entry_exec_split[1] or '%F' in entry_exec_split[-1]) and
+                        ('flatpak' not in entry_exec_split[0] or 'ru.linux_gaming.PortProton' in entry_exec_split[-1])):
                     continue
 
                 # TODO parse product name
@@ -140,7 +141,10 @@ class App(QtCore.QObject):
                 entry_icon = (os.path.isfile(entry_icon) and entry_icon) or ''
 
                 # Remove extra env in the beginning
-                entry_exec = f"env START_FROM_STEAM=1 {entry_exec[4:len(entry_exec)]}"
+                if ('data/scripts/start.sh' in entry_exec_split[1]):
+                    entry_exec = f"env START_FROM_STEAM=1 {entry_exec[4:len(entry_exec)]}"
+                elif ('flatpak' in entry_exec_split[0]):
+                    entry_exec = f"flatpak run --env=START_FROM_STEAM=1 {entry_exec[12:len(entry_exec)]}"
 
                 self.portproton_games_model.add_game(GameEntry(name=entry_name, icon=entry_icon, exec=entry_exec))
             except:
