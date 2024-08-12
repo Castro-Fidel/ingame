@@ -21,29 +21,14 @@ Rectangle {
     anchors.fill: parent
 
     //color: Style.backgroundColor
-    onVisibleChanged: {
-        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
-        tabButtons.x = tabButtons.tempX;
-        // console.log("tabButtons.x = " + tabButtons.x);
-    }
 
-    Component.onCompleted: {
-        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
-        tabButtons.x = tabButtons.tempX;
+    onVisibleChanged: updateTabs()
 
-        // being required in EntriesTab directly (see tabs/EntriesTab.qml)
-        // systemManagementGrid.model = core_app.system_entries;
+    Component.onCompleted: updateTabs()
 
-        // console.log("Tabs completed!");
-    }
-    onWidthChanged: function(){
-        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
-        tabButtons.x = tabButtons.tempX;
-    }
-    onHeightChanged: function(){
-        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
-        tabButtons.x = tabButtons.tempX;
-    }
+    onWidthChanged: updateTabs()
+
+    onHeightChanged: updateTabs()
 
     // Кнопки навигации
     ColumnLayout {
@@ -75,11 +60,7 @@ Rectangle {
                 property int tempX: 100
                 property bool toggle: false
 
-                Component.onCompleted: {
-                    tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
-                    tabButtons.x = tabButtons.tempX;
-                    // console.log("tabButtons completed!");
-                }
+                Component.onCompleted: updateTabs()
 
                 x: 0
 
@@ -114,22 +95,12 @@ Rectangle {
                     }
 
                 // Функция перемещения кнопок
-                // TODO: OPTIMIZE (REDUCE EXTRA FOR LOOP)
                 function changeButtonActiveTab(ButtonId){
                     let index = 0;
                     let left_distance = 0;
-                    let i = 0;
 
-                    for(i = 0; i < tabButtons.children.length; ++i) {
-                        if (children[i] === ButtonId) {
-                            index = i
-                            break
-                        }
-                    }
-
-                    for(i = 0; i < index; ++i) {
-                        left_distance += spacing + children[i].width;
-                    }
+                    index = tabButtons.children.findIndex(child => child === ButtonId)
+                    left_distance = (spacing + children[index].width) * index
 
                     tempX = topNavigation.width / 2 - tabButtons.children[index].width / 2 - left_distance;
                     tabs.activeButtonTab.isActive = false;
@@ -140,58 +111,30 @@ Rectangle {
                 // TODO: поменять всё на Repeater
                 // слишком много дубликатов кода
 
+                //TODO: задуматься о системе обращения к кнопкам
+                // лучшее, что я могу предложить, это вынести функцию отдельно....
+
                 TopMenuBut.TextButton {
                     id: buttonSystemManagement;
                     text: TabConstants.systemManagementTab;
-                    width: 400;
-                    onClicked: function(){
-                        tabButtons.x = tabButtons.tempX;
-                        tabButtons.changeButtonActiveTab(this);
-                        tabButtons.toggle = true;
-                        tabs.currentTab = TabConstants.systemManagementTab;
-                        tabs.currentTabInstance = systemManagementGrid;
-                    }
+                    onClicked: onClickedTabBut(this, TabConstants.systemManagementTab)
                     onReleased: tabButtons.toggle = false
                 }
                 TopMenuBut.TextButton {
                     id: buttonGames
                     text: TabConstants.gamesTab
-                    onClicked: function(){
-                        tabButtons.x = tabButtons.tempX;
-                        tabButtons.changeButtonActiveTab(this);
-                        tabButtons.toggle = true;
-                        tabs.currentTab = TabConstants.gamesTab;
-                        tabs.currentTabInstance = portProtonGamesTab;
-
-                        //if(core_app === undefined) return;
-                        //console.log("core_app found");
-
-                        //app.get_games();
-                        // tabs.changeTab();
-                        // ;console.log(tabs.currentTab);
-
-                        // ;console.log("1");
-                    }
+                    onClicked: onClickedTabBut(this, TabConstants.gamesTab)
                     onReleased: tabButtons.toggle = false
-
                 }
 
                 TopMenuBut.TextButton {
                     id: nativeGamesButton
                     text: TabConstants.nativeGamesTab
-                    //font.pixelSize: 60
-                    //height:Math.ceil(tabs.height/100 * 10)
-
-                    onClicked: function(){
-                        tabButtons.x = tabButtons.tempX;
-                        tabButtons.changeButtonActiveTab(this);
-                        tabButtons.toggle = true;
-                        tabs.currentTab = TabConstants.nativeGamesTab;
-                        tabs.currentTabInstance = nativeGamesTab;
-                   }
+                    onClicked: onClickedTabBut(this, TabConstants.nativeGamesTab)
                     onReleased: tabButtons.toggle = false
 
                 }
+
 
             }
             Image {
@@ -266,6 +209,18 @@ Rectangle {
         // tabButtons.changeButtonActiveTab(item);
     }
 
+    function updateTabs(){
+        tabButtons.changeButtonActiveTab(tabs.activeButtonTab);
+        tabButtons.x = tabButtons.tempX;
+    }
+
+    function onClickedTabBut(button, tabName){
+        tabButtons.x = tabButtons.tempX;
+        tabButtons.changeButtonActiveTab(button);
+        tabButtons.toggle = true;
+        tabs.currentTab = tabName;
+        tabs.currentTabInstance = nativeGamesTab;
+    }
 
 
     /* SIGNALS */
@@ -302,7 +257,6 @@ Rectangle {
     }
 
 }
-
 
 
 /*##^##
