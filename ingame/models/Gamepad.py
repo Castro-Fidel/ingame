@@ -16,10 +16,6 @@ class Gamepad:
     UP_DOWN_AXIS_SENSITIVITY = 0.7
     APPLY_BUTTON = 0
     BACK_BUTTON = 1
-    DPAD_UP = 0
-    DPAD_DOWN = 1
-    DPAD_LEFT = 2
-    DPAD_RIGHT = 3
 
     def __init__(self):
         self.joystick: Union[Joystick, None] = None
