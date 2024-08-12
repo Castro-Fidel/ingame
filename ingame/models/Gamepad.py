@@ -21,8 +21,6 @@ class Gamepad:
         self.joystick: Union[Joystick, None] = None
 
         self.terminated: bool = False
-        self.last_rb_clicked: bool = False
-        self.last_lb_clicked: bool = False
 
         self.last_left_clicked: bool = False
         self.last_right_clicked: bool = False
@@ -33,9 +31,6 @@ class Gamepad:
         self.last_dpad_right_clicked: bool = False
         self.last_dpad_up_clicked: bool = False
         self.last_dpad_down_clicked: bool = False
-
-        self.last_apply_clicked: bool = False
-        self.last_back_clicked: bool = False
 
         self.lb_clicked: () = lambda: None
         self.rb_clicked: () = lambda: None
@@ -82,35 +77,17 @@ class Gamepad:
                         self.joystick = joysticks[self.joystick.get_instance_id()]
 
                         # LB
-                        if event.button == self.LB_BUTTON and not self.last_lb_clicked:
-                            self.last_lb_clicked = not self.last_lb_clicked
+                        if event.button == self.LB_BUTTON:
                             self.lb_clicked()
                         # RB
-                        if event.button == self.RB_BUTTON and not self.last_rb_clicked:
-                            self.last_rb_clicked = not self.last_rb_clicked
+                        if event.button == self.RB_BUTTON:
                             self.rb_clicked()
                         # APPLY
-                        if event.button == self.APPLY_BUTTON and not self.last_apply_clicked:
-                            self.last_apply_clicked = not self.last_apply_clicked
+                        if event.button == self.APPLY_BUTTON:
                             self.apply_clicked()
                         # BACK
-                        if event.button == self.BACK_BUTTON and not self.last_back_clicked:
-                            self.last_back_clicked = not self.last_back_clicked
+                        if event.button == self.BACK_BUTTON:
                             self.back_clicked()
-
-                    if event.type == pygame.JOYBUTTONUP:
-                        # LB
-                        if event.button == self.LB_BUTTON and self.last_lb_clicked:
-                            self.last_lb_clicked = not self.last_lb_clicked
-                        # RB
-                        if event.button == self.RB_BUTTON and not self.last_rb_clicked:
-                            self.last_rb_clicked = not self.last_rb_clicked
-                        # APPLY
-                        if event.button == self.APPLY_BUTTON and not self.last_apply_clicked:
-                            self.last_apply_clicked = not self.last_apply_clicked
-                        # BACK
-                        if event.button == self.BACK_BUTTON and not self.last_back_clicked:
-                            self.last_back_clicked = not self.last_back_clicked
 
                     if event.type == pygame.JOYAXISMOTION:
                         self.joystick = joysticks[event.instance_id]
