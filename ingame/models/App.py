@@ -102,7 +102,7 @@ class App(QtCore.QObject):
 
                 entry_name = desktop_entry['Name'] or 'generic'
                 entry_exec = 'Exec' in desktop_entry and desktop_entry['Exec'] or ''
-                entry_icon = '' # desktop_entry['Icon']
+                entry_icon = ''  # desktop_entry['Icon']
 
                 assert (isinstance(entry_name, str)
                         and isinstance(entry_exec, str)
@@ -182,6 +182,22 @@ class App(QtCore.QObject):
         # self.agent.save_db()
 
     ''' SLOTS '''
+
+    @Slot(result=dict)
+    def get_settings(self):
+        to_form_settings = {}
+        with open("options.txt", "r") as F:
+            for setting in F:
+                set_vals = setting.split(":")
+                to_form_settings[set_vals[0]] = set_vals[1].replace("\n", "")
+            print(to_form_settings)
+        return to_form_settings
+
+    @Slot(dict)
+    def commit_settings(self, new_settings):
+        with open("options.txt", "w") as F:
+            for setting in new_settings:
+                F.write(setting + ":" + new_settings[setting])
 
     @Slot(str, result=dict)
     def get_game_data(self, game_name):
